@@ -1,0 +1,27 @@
+{
+  "name": "SystemLogs",
+  "base": "Model",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "message": {
+      "type": "string"
+    },
+    "dateImport": {
+      "type": "date"
+    },
+    "flag": {
+      "type": "Boolean"
+    },
+    "isImmediate": {
+      "type": "Boolean",
+      "default": false
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}

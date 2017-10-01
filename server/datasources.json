@@ -1,0 +1,48 @@
+{
+  "db": {
+    "name": "db",
+    "connector": "memory"
+  },
+  "mySqllocal": {
+    "host": "${MYSQL_L_HOST}",
+    "port": "${MYSQL_L_PORT}",
+    "url": "${MYSQL_L_URL}",
+    "database": "${MYSQL_L_DBNAME}",
+    "password": "${MYSQL_L_PASSWORD}",
+    "name": "mySqllocal",
+    "user": "${MYSQL_L_USER}",
+    "connector": "mysql"
+  },
+  "mongoNode": {
+    "host": "${MONGO_HOST}",
+    "port": "${MONGO_PORT}",
+    "url": "${MONGO_URL}",
+    "database": "${MONGO_DBNAME}",
+    "password": "${MONGO_PASSWORD}",
+    "name": "mongoNode",
+    "user": "${MONGO_USER}",
+    "connector": "mongodb"
+  },
+  "EmailDataSource": {
+    "name": "EmailDataSource",
+    "connector": "mail",
+    "transports": [
+      {
+        "type": "${EMAIL_TRANSPORTS_TYPE}",
+        "host": "${EMAIL_TRANSPORTS_HOST}",
+        "secure": "${EMAIL_TRANSPORTS_SECURE}",
+        "port": "${EMAIL_TRANSPORTS_PORT}",
+        "auth": {
+          "user": "${EMAIL_AUTH_USER}",
+          "pass": "${EMAIL_AUTH_PASS}"
+        }
+      }
+    ]
+  },
+  "FileUpload": {
+    "name": "FileUpload",
+    "connector": "loopback-component-storage",
+    "provider": "filesystem",
+    "root": "./storage"
+  }
+}

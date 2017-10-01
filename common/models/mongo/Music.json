@@ -1,0 +1,31 @@
+{
+  "name": "Music",
+  "plural": "Music",
+  "base": "Model",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "src": {
+      "type": "string"
+    },
+    "like": {
+      "type": "number"
+    },
+    "dateCreate": {
+      "type": "date"
+    },
+    "frame": {
+      "type": "string",
+      "default": ""
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}

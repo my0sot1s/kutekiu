@@ -1,0 +1,38 @@
+{
+  "name": "StoriesContent",
+  "plural": "StoriesContent",
+  "base": "Model",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "banner": {
+      "type": "array",
+      "required": true
+    },
+    "content": {
+      "type": "array"
+    },
+    "images": {
+      "type": "array"
+    },
+    "postId": {
+      "type": "string"
+    },
+    "dateCreate": {
+      "type": "date"
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [
+    {
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW"
+    }
+  ],
+  "methods": {}
+}

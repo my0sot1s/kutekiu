@@ -1,0 +1,32 @@
+{
+  "name": "Notes",
+  "plural": "Notes",
+  "base": "Model",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "content": {
+      "type": "string"
+    },
+    "dateCreate": {
+      "type": "date"
+    },
+    "positionX": {
+      "type": "number",
+      "default": 200
+    },
+    "positionY": {
+      "type": "number",
+      "default": 200
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}

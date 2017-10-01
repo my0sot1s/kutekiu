@@ -1,0 +1,41 @@
+{
+  "name": "Post",
+  "plural": "Post",
+  "base": "PersistedModel",
+  "idInjection": false,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "post_id": {
+      "type": "number",
+      "id": true
+    },
+    "user_post": {
+      "type": "number"
+    },
+    "caption": {
+      "type": "string"
+    },
+    "media": {
+      "type": "string"
+    },
+    "dateCreate": {
+      "type": "date"
+    },
+    "status": {
+      "type": "Boolean"
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [
+    {
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW"
+    }
+  ],
+  "methods": {}
+}

@@ -1,0 +1,106 @@
+{
+  "_meta": {
+    "sources": [
+      "loopback/common/models",
+      "loopback/server/models",
+      "../common/models",
+      "./models",
+      "../common/models/mongo",
+      "./models/mongo",
+      "../common/models/mysql",
+      "./models/mysql",
+      "../common/models/servermail",
+      "./models/servermail",
+      "../common/models/logs",
+      "./models/logs",
+      "../common/models/upload",
+      "./models/upload",
+      "../common/models/user",
+      "./models/user"
+    ],
+    "mixins": [
+      "loopback/common/mixins",
+      "loopback/server/mixins",
+      "../common/mixins",
+      "./mixins"
+    ]
+  },
+  "User": {
+    "dataSource": "db"
+  },
+  "AccessToken": {
+    "dataSource": "db",
+    "public": false
+  },
+  "ACL": {
+    "dataSource": "db",
+    "public": false
+  },
+  "RoleMapping": {
+    "dataSource": "db",
+    "public": false,
+    "options": {
+      "strictObjectIDCoercion": true
+    }
+  },
+  "Role": {
+    "dataSource": "db",
+    "public": false
+  },
+  "Blog": {
+    "dataSource": "mongoNode",
+    "public": true
+  },
+  "Center": {
+    "dataSource": "mongoNode",
+    "public": true
+  },
+  "Foods": {
+    "dataSource": "mongoNode",
+    "public": true
+  },
+  "Stories": {
+    "dataSource": "mongoNode",
+    "public": true
+  },
+  "StoriesContent": {
+    "dataSource": "mongoNode",
+    "public": true
+  },
+  "Post": {
+    "dataSource": "mySqllocal",
+    "public": true
+  },
+  "EmailService": {
+    "dataSource": "mongoNode",
+    "public": true
+  },
+  "SystemLogs": {
+    "dataSource": "mongoNode",
+    "public": false
+  },
+  "EmailRef": {
+    "dataSource": "EmailDataSource",
+    "public": false
+  },
+  "Upload": {
+    "dataSource": "db",
+    "public": true
+  },
+  "UserInfo": {
+    "dataSource": "mongoNode",
+    "public": true
+  },
+  "BaseUpload": {
+    "dataSource": "FileUpload",
+    "public": true
+  },
+  "Music": {
+    "dataSource": "mongoNode",
+    "public": true
+  },
+  "Notes": {
+    "dataSource": "mongoNode",
+    "public": true
+  }
+}
