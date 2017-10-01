@@ -67,10 +67,7 @@
     "dataSource": "mongoNode",
     "public": true
   },
-  "Post": {
-    "dataSource": "mySqllocal",
-    "public": true
-  },
+
   "EmailService": {
     "dataSource": "mongoNode",
     "public": true

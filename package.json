@@ -9,6 +9,7 @@
     "lint": "eslint .",
     "start": "node .",
     "dev": "nodemon --exec node .",
+    "deploy": "git add .&& git commit -m auto&& git push -u origin master",
     "posttest": "npm run lint && nsp check"
   },
   "dependencies": {
