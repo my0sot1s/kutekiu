@@ -1,1 +1,1 @@
-web: slc run --cluster <2>
+web: slc run 
