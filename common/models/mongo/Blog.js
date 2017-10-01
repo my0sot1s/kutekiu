@@ -43,7 +43,8 @@ module.exports = function (Blog) {
             }, function (err, docs) {
                 var doc2 = [];
                 docs.map(value => {
-                    doc2.push(delete value.content);
+                    value.content = ""
+                    doc2.push(value);
                 })
                 if (err) cb(null, cst.FAILURE_CODE, cst.GET_FAILURE, cst.NULL_OBJECT);
                 cb(null, cst.SUCCESS_CODE, cst.GET_SUCCESS, doc2);

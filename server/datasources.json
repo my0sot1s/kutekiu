@@ -11,7 +11,8 @@
     "password": "${MONGO_PASSWORD}",
     "name": "mongoNode",
     "user": "${MONGO_USER}",
-    "connector": "mongodb"
+    "connector": "mongodb",
+    "allowExtendedOperators": true
   },
   "EmailDataSource": {
     "name": "EmailDataSource",
