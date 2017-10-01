@@ -18,6 +18,15 @@
     "email": {
       "type": "string"
     },
+    "std": {
+      "type": "string"
+    },
+    "gender": {
+      "type": "number"
+    },
+    "born": {
+      "type": "date"
+    },
     "displayName": {
       "type": "string"
     },

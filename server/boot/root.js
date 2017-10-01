@@ -12,5 +12,4 @@ module.exports = function (server) {
 
   server.use(router);
   require("../../utils/upload");
-  require("../../utils/disableRM");
 };
