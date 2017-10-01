@@ -3,7 +3,6 @@
     "name": "db",
     "connector": "memory"
   },
-
   "mongoNode": {
     "host": "${MONGO_HOST}",
     "port": "${MONGO_PORT}",
@@ -29,11 +28,5 @@
         }
       }
     ]
-  },
-  "FileUpload": {
-    "name": "FileUpload",
-    "connector": "loopback-component-storage",
-    "provider": "filesystem",
-    "root": "./storage"
   }
 }

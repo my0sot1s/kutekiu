@@ -67,7 +67,6 @@
     "dataSource": "mongoNode",
     "public": true
   },
-
   "EmailService": {
     "dataSource": "mongoNode",
     "public": true
@@ -86,10 +85,6 @@
   },
   "UserInfo": {
     "dataSource": "mongoNode",
-    "public": true
-  },
-  "BaseUpload": {
-    "dataSource": "FileUpload",
     "public": true
   },
   "Music": {

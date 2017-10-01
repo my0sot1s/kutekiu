@@ -1,6 +1,6 @@
 {
   "name": "BaseUpload",
-  "plural": "BaseUpload ",
+  "plural": "BaseUpload",
   "base": "Model",
   "idInjection": true,
   "options": {
