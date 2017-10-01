@@ -18,11 +18,11 @@ module.exports = function (Emailservice) {
      * @param {string} html 
      * @param {cb} cb
      */
-    Emailservice.sendAnEmail = function (to, subject, text, html, cb) {
-        app.models.EmailRef.send({ to, from: cst.EMAIL_NAME, subject, text, html },
+    Emailservice.sendAnEmail = function (to, subject, html, cb) {
+        app.models.EmailRef.send({ to, from: cst.EMAIL_NAME, subject, html },
             function (err, info) {
-                if (err) cb(null, cst.SUCCESS_CODE, err, cst.NULL_OBJECT)
-                else cb(null, cst.FAILURE_CODE, "SENT", cst.NULL_OBJECT)
+                if (err) cb(null, cst.FAILURE_CODE, err, cst.NULL_OBJECT)
+                else cb(null, cst.SUCCESS_CODE, "SENT", cst.NULL_OBJECT)
             })
     }
     Emailservice.remoteMethod("sendAnEmail", {
@@ -30,7 +30,6 @@ module.exports = function (Emailservice) {
         accepts: [
             { arg: "to", type: "string", required: true },
             { arg: "subject", type: "string", required: true },
-            { arg: "text", type: "string", required: true },
             { arg: "html", type: "string", required: true },
         ],
         returns: [
