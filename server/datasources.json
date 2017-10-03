@@ -3,14 +3,36 @@
     "name": "db",
     "connector": "memory"
   },
-  "mongoNode": {
+  "mongo_user": {
+    "host": "${MONGO_HOST_USER}",
+    "port": "${MONGO_PORT_USER}",
+    "url": "${MONGO_URL_USER}",
+    "database": "${MONGO_DBNAME_USER}",
+    "password": "${MONGO_PASSWORD_USER}",
+    "name": "mongo_user",
+    "user": "${MONGO_USER_USER}",
+    "connector": "mongodb",
+    "allowExtendedOperators": true
+  },
+  "mongo_base": {
     "host": "${MONGO_HOST}",
     "port": "${MONGO_PORT}",
     "url": "${MONGO_URL}",
     "database": "${MONGO_DBNAME}",
     "password": "${MONGO_PASSWORD}",
-    "name": "mongoNode",
+    "name": "mongo_base",
     "user": "${MONGO_USER}",
+    "connector": "mongodb",
+    "allowExtendedOperators": true
+  },
+  "mongo_sys": {
+    "host": "${MONGO_HOST_SYSTEM}",
+    "port": "${MONGO_PORT_SYSTEM}",
+    "url": "${MONGO_URL_SYSTEM}",
+    "database": "${MONGO_DBNAME_SYSTEM}",
+    "password": "${MONGO_PASSWORD_SYSTEM}",
+    "name": "mongo_sys",
+    "user": "${MONGO_USER_SYSTEM}",
     "connector": "mongodb",
     "allowExtendedOperators": true
   },
@@ -29,5 +51,11 @@
         }
       }
     ]
+  },
+  "storage": {
+    "name": "storage",
+    "connector": "loopback-component-storage",
+    "provider": "filesystem",
+    "root": "./uploads"
   }
 }

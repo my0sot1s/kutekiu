@@ -29,51 +29,63 @@
     "dataSource": "db",
     "public": false
   },
+  "Music": {
+    "dataSource": "mongo_base",
+    "public": true
+  },
+  "Notes": {
+    "dataSource": "mongo_base",
+    "public": true
+  },
+  "Blog": {
+    "dataSource": "mongo_base",
+    "public": true
+  },
+  "Center": {
+    "dataSource": "mongo_base",
+    "public": true
+  },
+  "Foods": {
+    "dataSource": "mongo_base",
+    "public": true
+  },
+  "Stories": {
+    "dataSource": "mongo_base",
+    "public": true
+  },
+  "StoriesContent": {
+    "dataSource": "mongo_base",
+    "public": true
+  },
   "AccessToken": {
-    "dataSource": "mongoNode",
+    "dataSource": "mongo_user",
     "public": false
   },
   "ACL": {
-    "dataSource": "db",
+    "dataSource": "mongo_user",
     "public": false
   },
   "RoleMapping": {
-    "dataSource": "db",
+    "dataSource": "mongo_user",
     "public": false,
     "options": {
       "strictObjectIDCoercion": true
     }
   },
   "Role": {
-    "dataSource": "db",
+    "dataSource": "mongo_user",
     "public": false
   },
-  "Blog": {
-    "dataSource": "mongoNode",
-    "public": true
-  },
-  "Center": {
-    "dataSource": "mongoNode",
-    "public": true
-  },
-  "Foods": {
-    "dataSource": "mongoNode",
-    "public": true
-  },
-  "Stories": {
-    "dataSource": "mongoNode",
-    "public": true
-  },
-  "StoriesContent": {
-    "dataSource": "mongoNode",
+  "UserInfo": {
+    "dataSource": "mongo_user",
     "public": true
   },
   "EmailService": {
-    "dataSource": "mongoNode",
+    "dataSource": "mongo_sys",
     "public": true
   },
   "SystemLogs": {
-    "dataSource": "mongoNode",
+    "dataSource": "mongo_sys",
     "public": false
   },
   "EmailRef": {
@@ -84,16 +96,8 @@
     "dataSource": "db",
     "public": true
   },
-  "UserInfo": {
-    "dataSource": "mongoNode",
-    "public": true
-  },
-  "Music": {
-    "dataSource": "mongoNode",
-    "public": true
-  },
-  "Notes": {
-    "dataSource": "mongoNode",
+  "BaseUpload": {
+    "dataSource": "storage",
     "public": true
   }
 }
