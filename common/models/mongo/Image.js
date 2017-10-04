@@ -1,5 +1,6 @@
 'use strict';
 
+
 const cst = require("../../../utils/constants");
 const Promise = require("bluebird");
 /**
@@ -7,21 +8,22 @@ const Promise = require("bluebird");
  * 
  * 
  * @description - all remote method
- * GET getFoods /getFoods
- * GET getFoodsById /getFoodsById
- * POST createNewFoods /createNewFoods
- * PUT updateFoods /updateFoods
- * DELETE deleteFoods /deleteFoods
+ * GET getImage /getImage
+ * GET getImageById /getImageById
+ * POST createNewImage /createNewImage
+ * PUT updateImage /updateImage
+ * DELETE deleteImage /deleteImage
  */
-module.exports = function (Foods) {
+
+module.exports = function (Image) {
 
     /**
      * @param {number} limit @default 5
      * @param {number} page @default 1
      * @param {function} cb
      */
-    Foods.getFoods = function (limit, page, cb) {
-        Foods.find(
+    Image.getImage = function (limit, page, cb) {
+        Image.find(
             {
                 order: "dateCreate DESC",
                 skip: limit && page ? limit * page : 0,
@@ -35,8 +37,8 @@ module.exports = function (Foods) {
      * @param {string} id 
      * @param {function} cb
      */
-    Foods.getFoodsById = function (id, cb) {
-        Foods.findById(id, {}, function (err, doc) {
+    Image.getImageById = function (id, cb) {
+        Image.findById(id, {}, function (err, doc) {
             if (err) cb(null, cst.FAILURE_CODE, cst.GET_FAILURE, cst.NULL_OBJECT);
             cb(null, cst.SUCCESS_CODE, cst.GET_SUCCESS, doc);
         });
@@ -48,16 +50,30 @@ module.exports = function (Foods) {
      * @param {string} title @required
      * @param {string} link @required
      * @param {string} tag @rquired
-     * @param {string} fomular 
-     * @param {number} price 
      * @param {function} cb
      */
-    Foods.createNewFoods = function (title, link, tag, price, fomular, cb) {
+    Image.createNewImage = function (title, link, tag, cb) {
         // parse to object
-        Foods.create({ title, link, tag, price, fomular, dateCreate: new Date() }, function (err, doc) {
+        Image.create({ title, link, tag, dateCreate: new Date() }, function (err, doc) {
             if (err) cb(null, cst.FAILURE_CODE, cst.POST_FAILURE, cst.NULL_OBJECT);
             cb(null, cst.SUCCESS_CODE, cst.POST_SUCCESS, doc);
         })
+    }
+    /**
+ * create new verb : POST
+ * create new with accept string arg
+ * doc is a JSON.stringify
+ * @param {string} title @required
+ * @param {string} links @required
+ * @param {string} tag @rquired
+ * @param {function} cb
+ */
+    Image.createMany = function (title, link, tag, cb) {
+        // parse to object
+        Promise.map(link, function (data) {
+            Image.create({ title, data, tag, dateCreate: new Date() })
+        }).then(data => cb(null, cst.SUCCESS_CODE, cst.POST_SUCCESS, doc))
+            .catch(err => cb(null, cst.FAILURE_CODE, cst.POST_FAILURE, cst.NULL_OBJECT))
     }
     /**
      * create new verb : POST
@@ -65,20 +81,16 @@ module.exports = function (Foods) {
      * @param {string} id  @required
      * @param {string} title 
      * @param {string} link 
-     * @param {string} fomular 
-     * @param {number} price 
      * @param {string} tag 
      * @param {function} cb
      */
-    Foods.updateFoods = function (id, title, link, price, fomular, tag, cb) {
+    Image.updateImage = function (id, title, link, tag, cb) {
         // parse to object
-        let ndoc = { title, link, tag, price, fomular, dateCreate: new Date() };
+        let ndoc = { title, link, tag, dateCreate: new Date() };
         if (!title || title === "") delete ndoc.title;
         if (!link || link === "") delete ndoc.link;
         if (!tag || tag === "") delete ndoc.tag;
-        if (!price || tag === "") delete ndoc.price;
-        if (!fomular || fomular === "") delete ndoc.fomular;
-        Foods.update({ id }, ndoc)
+        Image.update({ id }, ndoc)
             .then(function (doc) {
                 cb(null, cst.SUCCESS_CODE, cst.POST_SUCCESS, doc);
             })
@@ -92,9 +104,9 @@ module.exports = function (Foods) {
      * @param {string} id  @required
      * @param {function} cb
      */
-    Foods.deleteFoods = function (id, cb) {
+    Image.deleteImage = function (id, cb) {
         // parse to object
-        Foods.destroyById(id)
+        Image.destroyById(id)
             .then(function () {
                 cb(null, cst.SUCCESS_CODE, cst.POST_SUCCESS, { id });
             })
@@ -103,9 +115,9 @@ module.exports = function (Foods) {
             });
     }
 
-    Foods.remoteMethod(
-        "getFoods", {
-            http: { path: "/getFoods", verb: "GET" },
+    Image.remoteMethod(
+        "getImage", {
+            http: { path: "/getImage", verb: "GET" },
             accepts: [
                 { arg: "limit", type: "number", default: 5 },
                 { arg: "page", type: "number", default: 0 },
@@ -117,9 +129,9 @@ module.exports = function (Foods) {
             ]
         });
 
-    Foods.remoteMethod(
-        "getFoodsById", {
-            http: { path: "/getFoodsById", verb: "GET" },
+    Image.remoteMethod(
+        "getImageById", {
+            http: { path: "/getImageById", verb: "GET" },
             accepts: [
                 { arg: "id", type: "string", required: true },
             ],
@@ -129,9 +141,9 @@ module.exports = function (Foods) {
                 { arg: "data", type: "object" },
             ]
         });
-    Foods.remoteMethod(
-        "createNewFoods", {
-            http: { path: "/createNewFoods", verb: "POST" },
+    Image.remoteMethod(
+        "createNewImage", {
+            http: { path: "/createNewImage", verb: "POST" },
             accepts: [
                 { arg: "title", type: "string", required: true },
                 { arg: "link", type: "string", required: true },
@@ -145,16 +157,28 @@ module.exports = function (Foods) {
                 { arg: "data", type: "object" },
             ]
         });
-    Foods.remoteMethod(
-        "updateFoods", {
-            http: { path: "/updateFoods", verb: "PUT" },
+    Image.remoteMethod(
+        "createMany", {
+            http: { path: "/createMany", verb: "POST" },
+            accepts: [
+                { arg: "title", type: "string", required: true },
+                { arg: "link", type: "array", required: true, description: "Ảnh là mảng chứa ảnh" },
+                { arg: "tag", type: "string", required: true },
+            ],
+            returns: [
+                { arg: "status", type: "number" },
+                { arg: "message", type: "string" },
+                { arg: "data", type: "object" },
+            ]
+        });
+    Image.remoteMethod(
+        "updateImage", {
+            http: { path: "/updateImage", verb: "PUT" },
             accepts: [
                 { arg: "id", type: "string", required: true, description: "ID của record cần update" },
                 { arg: "title", type: "string" },
                 { arg: "link", type: "string" },
                 { arg: "tag", type: "string" },
-                { arg: "fomular", type: "string", description: "Công thức" },
-                { arg: "price", type: "number", default: 0 }
             ],
             returns: [
                 { arg: "status", type: "number" },
@@ -162,9 +186,9 @@ module.exports = function (Foods) {
                 { arg: "data", type: "object" }
             ]
         });
-    Foods.remoteMethod(
-        "deleteFoods", {
-            http: { path: "/deleteFoods", verb: "DELETE" },
+    Image.remoteMethod(
+        "deleteImage", {
+            http: { path: "/deleteImage", verb: "DELETE" },
             accepts: [
                 { arg: "id", type: "string", required: true, description: "ID của record cần delete" }
             ],

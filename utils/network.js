@@ -6,6 +6,7 @@
  */
 const { RABBITMQ_USER, RABBITMQ_PW, RABBITMQ_HOST, RABBITMQ_NAME } = process.env;
 const url = "amqp://" + RABBITMQ_USER + ":" + RABBITMQ_PW + "@" + RABBITMQ_HOST + "/" + RABBITMQ_NAME;
+// console.log(url)
 const bus = require('servicebus').bus({ url, delayOnStartup: 0, confirmChannel: true });
 const OPTIONS = { routingKey: 'cms_notify.broadcast' }
 

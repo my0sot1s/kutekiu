@@ -99,5 +99,9 @@
   "BaseUpload": {
     "dataSource": "storage",
     "public": true
+  },
+  "Image": {
+    "dataSource": "mongo_base",
+    "public": true
   }
 }
