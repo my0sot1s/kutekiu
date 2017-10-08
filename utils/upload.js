@@ -24,7 +24,7 @@ function middlewareUpload(req, res, next) {
     cloudinary.v2.uploader.upload_stream((err, result) => {
         if (err) next(err, null)
         else next(null, result);
-    }, { folder: "/public" }, ).end(req.file.buffer);
+    }).end(req.file.buffer);
 }
 
 module.exports = {

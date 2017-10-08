@@ -54,10 +54,12 @@ module.exports = function (Image) {
      */
     Image.createNewImage = function (title, link, tag, cb) {
         // parse to object
-        Image.create({ title, link, tag, dateCreate: new Date() }, function (err, doc) {
-            if (err) cb(null, cst.FAILURE_CODE, cst.POST_FAILURE, cst.NULL_OBJECT);
-            cb(null, cst.SUCCESS_CODE, cst.POST_SUCCESS, doc);
-        })
+        Image.create({ title, link, tag, dateCreate: new Date() })
+            .then(doc => {
+                cb(null, cst.SUCCESS_CODE, cst.POST_SUCCESS, doc);
+            }).catch(err => {
+                cb(null, cst.FAILURE_CODE, cst.POST_FAILURE, cst.NULL_OBJECT);
+            })
     }
     /**
  * create new verb : POST
@@ -155,8 +157,6 @@ module.exports = function (Image) {
                 { arg: "title", type: "string", required: true },
                 { arg: "link", type: "string", required: true },
                 { arg: "tag", type: "string", required: true },
-                { arg: "fomular", type: "string", description: "Công thức" },
-                { arg: "price", type: "number", default: 0 }
             ],
             returns: [
                 { arg: "status", type: "number" },
