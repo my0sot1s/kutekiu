@@ -93,7 +93,7 @@
     "public": false
   },
   "Upload": {
-    "dataSource": "db",
+    "dataSource": "mongo_sys",
     "public": true
   },
   "BaseUpload": {

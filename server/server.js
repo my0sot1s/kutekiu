@@ -2,10 +2,20 @@
 
 var loopback = require('loopback');
 var boot = require('loopback-boot');
+const multer = require("multer");
+const bodyParser = require("body-parser");
 require("dotenv").config({ path: __dirname + "/../.env" });
 
 var app = module.exports = loopback();
 
+/**
+ * @author te.nguyen - <manhte231>
+ * note: issuse at : https://stackoverflow.com/questions/28523782/how-can-i-use-body-parser-with-loopback
+ */
+
+app.use(bodyParser.json({ "limit": "50mb" })); // for parsing application/json
+app.use(bodyParser.urlencoded({ extended: true, "limit": "50mb" })); // for parsing application/x-www-form-urlencoded
+// app.use(multer()); // for parsing multipart/form-data
 app.start = function () {
     // start the web server
     return app.listen(function () {

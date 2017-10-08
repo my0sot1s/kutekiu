@@ -11,5 +11,4 @@ module.exports = function (server) {
   router.get('/', server.loopback.status());
 
   server.use(router);
-  require("../../utils/upload");
 };

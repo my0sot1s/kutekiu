@@ -70,10 +70,17 @@ module.exports = function (Image) {
  */
     Image.createMany = function (title, link, tag, cb) {
         // parse to object
-        Promise.map(link, function (data) {
-            Image.create({ title, data, tag, dateCreate: new Date() })
-        }).then(data => cb(null, cst.SUCCESS_CODE, cst.POST_SUCCESS, doc))
-            .catch(err => cb(null, cst.FAILURE_CODE, cst.POST_FAILURE, cst.NULL_OBJECT))
+        var createStack = [];
+        link.map(data => {
+            createStack.push(Image.create({ title, data, tag, dateCreate: new Date() }))
+        });
+        Promise.all(createStack)
+            .then(function (docs) {
+                cb(null, cst.SUCCESS_CODE, cst.POST_SUCCESS, docs)
+            })
+            .catch(err => {
+                cb(null, cst.FAILURE_CODE, cst.POST_FAILURE, cst.NULL_OBJECT)
+            })
     }
     /**
      * create new verb : POST

@@ -11,11 +11,12 @@
     },
     "json": {
       "strict": false,
-      "limit": "100kb"
+      "limit": "50mb"
     },
     "urlencoded": {
       "extended": true,
-      "limit": "100kb"
+      "limit": "50mb",
+      "type": "application/vnd.api+json"
     },
     "cors": false
   }

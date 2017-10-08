@@ -1,61 +1,40 @@
 'use strict';
 
-const zEupload = require("../../../utils/upload");
 const app = require("../../../server/server");
+const cst = require("../../../utils/constants")
+const multer = require("multer");
+const storage = multer.memoryStorage();
+const upload = multer({ storage, limits: "50mb" });
+const { middlewareUpload } = require("../../../utils/upload")
+const MAX_COUNT = 10;
+const multerSingle = multer().single("file");
+const multerArray = multer().array("files", MAX_COUNT);
+
 module.exports = function (Upload) {
 
 
-    Upload.naturalUpload = function (files, cb) {
-
+    Upload.beforeRemote("single", function (ctx, any, next) {
+        multerSingle(ctx.req, ctx.res, next)
+    })
+    Upload.beforeRemote("multiples", function (ctx, any, next) {
+        multerArray(ctx.req, ctx.res, next)
+    })
+    Upload.single = function (req, res, cb) {
+        middlewareUpload(req, res, function (err, result) {
+            if (err) cb(null, cst.FAILURE_CODE, cst.GET_FAILURE, cst.NULL_OBJECT);
+            cb(null, cst.SUCCESS_CODE, cst.GET_SUCCESS, result);
+        })
     }
-    /**
-     * @param {[string]} files
-     * @param {cb} cb
-     */
-    Upload.base64Upload = function (files, cb) {
-
-        if (Array.isArray(files)) {
-            let len = files.length, info = [];
-            for (var i = 0; i < len; i++) {
-                zEupload.uploadBase64(files[i]).then((doc) => {
-                    info.push(doc);
-                }).err(err => {
-                    info.push(err);
-                    throw new Error(err);
-                });
-                cb(null, 200, "SUCCESS", info)
-            }
-        }
-        else {
-            zEupload.uploadBase64(files).then((doc) => {
-                cb(null, 200, "SUCCESS", [doc])
-            }).err(err => {
-                cb(null, 201, "FALSE", [err]);
-            });
-
-        }
+    Upload.multiples = function (req, res, cb) {
+        // middlewareUpload(req, res);
+        cb(null, cst.FAILURE_CODE, "NOT YET", cst.NULL_OBJECT);
     }
 
-    Upload.beforeRemote("naturalUpload", function (ctx, model, next) {
-        // let { files } = ctx.req.body;
-        console.log(ctx.args.file.toString())
-        let buf = new Buffer(ctx.args.file, "binary")
-
-        var ll = buf.toString("base64");
-        zEupload.uploadBase64(buf)
-            .then(data => {
-
-            })
-            .catch(err => {
-
-            })
-
-    });
-
-    Upload.remoteMethod("naturalUpload", {
-        http: { path: "/upload", verb: "POST" },
+    Upload.remoteMethod("single", {
+        http: { path: "/single", verb: "POST" },
         accepts: [
-            { arg: 'file', type: 'file', http: { source: 'body' }, required: true }
+            { arg: 'req', type: 'object', 'http': { source: 'req' } },
+            { arg: 'res', type: 'object', 'http': { source: 'res' } }
         ],
         returns: [
             { arg: "status", type: "number" },
@@ -63,10 +42,11 @@ module.exports = function (Upload) {
             { arg: "data", type: "object" }
         ]
     })
-    Upload.remoteMethod("base64Upload", {
-        http: { path: "/base64upload", verb: "POST" },
+    Upload.remoteMethod("multiples", {
+        http: { path: "/multiples", verb: "POST" },
         accepts: [
-            { arg: "files", type: "array" }
+            { arg: 'req', type: 'object', 'http': { source: 'req' } },
+            { arg: 'res', type: 'object', 'http': { source: 'res' } }
         ],
         returns: [
             { arg: "status", type: "number" },
