@@ -21,7 +21,7 @@ class AppBase extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            data: {}
+            data: {},
         }
     }
     componentDidMount() {
@@ -34,16 +34,18 @@ class AppBase extends Component {
         //     // client.publish(destination, 'Oh herrow');
         // });
     }
-
+    showModal() {
+        this.setState({ showModal: true });
+    }
     render() {
         return (
             <div id="app">
+                <button onClick={() => this.setState({ showModal: !this.state.showModal })}>Show modal</button>
                 <Head />
                 <Header />
                 <Image />
-                <ImageUpload />
-                <Footer />
-                {/* <Modal isShowingModal={true} /> */}
+                <ImageUpload showModal={this.state.showModal} />
+                <Footer showModal={this.showModal.bind(this)} />
             </div >
         );
     }

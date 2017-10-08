@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import * as actions from '../actions/image'
 import Loader from './components/loader'
 import _ from 'lodash';
+import Modal from "./components/modal"
 require("./image.css")
 
 
@@ -14,7 +15,11 @@ class Image extends Component {
             data: null,
             page: 0, limit: 9,
             doUpdate: false,
-            noItem: false
+            noItem: false,
+            showModal: false,
+
+
+            img: "", tag: ""
         }
     }
     /**
@@ -42,11 +47,15 @@ class Image extends Component {
         if (scrollTop / possion > 0.75 && !this.state.doUpdate) {
             this.setState((prevState) => ({
                 page: prevState.page + 1,
-                doUpdate: true
+                doUpdate: true,
+                showModal: false
             }), () => {
                 this.fetchAction(this.state.page);
             });
         }
+    }
+    showModal(image, tag) {
+        this.setState({ image, tag, showModal: true })
     }
     componentWillReceiveProps(nextProps) {
         let _src = []
@@ -72,12 +81,14 @@ class Image extends Component {
     }
 
     renderItem(src, tag, key) {
-        return (<div className="item" key={key}>
-            <img src={src} tag={tag} />
-            <div className="wrapper">
-                <div className="btn"></div>
-            </div>
-        </div>)
+        return (
+            <div className="item" key={key}
+                onClick={() => this.showModal(src, tag)}>
+                <img src={src} tag={tag} />
+                <div className="wrapper">
+                    <div className="btn"></div>
+                </div>
+            </div>)
     }
     renderContent(array) {
         return (
@@ -95,8 +106,12 @@ class Image extends Component {
             pim.push(this.renderContent(this.state.data[i]));
         }
         return (
+
             <div className="container">
                 {pim}
+                <Modal showModal={this.state.showModal}>
+                    <img src={this.state.image} tag={this.state.tag} />
+                </Modal>
             </div>
         );
     }
