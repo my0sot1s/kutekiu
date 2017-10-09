@@ -17,6 +17,9 @@ const Promise = require("bluebird");
 
 module.exports = function (Image) {
 
+    Image.isImage = function (link) {
+        return /(\.jpg|\.jpge|\.png)$/.test(link);
+    }
     /**
      * @param {number} limit @default 5
      * @param {number} page @default 1
@@ -54,12 +57,14 @@ module.exports = function (Image) {
      */
     Image.createNewImage = function (title, link, tag, cb) {
         // parse to object
-        Image.create({ title, link, tag, dateCreate: new Date() })
-            .then(doc => {
-                cb(null, cst.SUCCESS_CODE, cst.POST_SUCCESS, doc);
-            }).catch(err => {
-                cb(null, cst.FAILURE_CODE, cst.POST_FAILURE, cst.NULL_OBJECT);
-            })
+        Image.isImage(link) ?
+            Image.create({ title, data: link, tag, dateCreate: new Date() })
+                .then(doc => {
+                    cb(null, cst.SUCCESS_CODE, cst.POST_SUCCESS, doc);
+                }).catch(err => {
+                    cb(null, cst.FAILURE_CODE, cst.POST_FAILURE, cst.NULL_OBJECT);
+                })
+            : cb(null, cst.FAILURE_CODE, cst.POST_FAILURE, cst.NULL_OBJECT);
     }
     /**
  * create new verb : POST

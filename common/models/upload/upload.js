@@ -5,10 +5,10 @@ const cst = require("../../../utils/constants")
 const multer = require("multer");
 const storage = multer.memoryStorage();
 const upload = multer({ storage, limits: "50mb" });
-const { middlewareUpload } = require("../../../utils/upload")
+const { middlewareUpload, middleUploader } = require("../../../utils/upload")
 const MAX_COUNT = 10;
-const multerSingle = multer().single("file");
-const multerArray = multer().array("files", MAX_COUNT);
+const multerSingle = upload.single("file");
+const multerArray = upload.array("file", MAX_COUNT);
 
 module.exports = function (Upload) {
 
@@ -19,6 +19,13 @@ module.exports = function (Upload) {
     Upload.beforeRemote("multiples", function (ctx, any, next) {
         multerArray(ctx.req, ctx.res, next)
     })
+    Upload.destroy = function (id, cb) {
+        middleUploadDestroy(id).then(log => {
+            cb(null, cst.SUCCESS_CODE, cst.GET_SUCCESS, log);
+        }).catch(err => {
+            cb(null, cst.SUCCESS_CODE, cst.GET_SUCCESS, result);
+        })
+    }
     Upload.single = function (req, res, cb) {
         middlewareUpload(req, res, function (err, result) {
             if (err) cb(null, cst.FAILURE_CODE, cst.GET_FAILURE, cst.NULL_OBJECT);
@@ -27,7 +34,15 @@ module.exports = function (Upload) {
     }
     Upload.multiples = function (req, res, cb) {
         // middlewareUpload(req, res);
-        cb(null, cst.FAILURE_CODE, "NOT YET", cst.NULL_OBJECT);
+        let arrFiles = [];
+        req.files.map(value => {
+            arrFiles.push(middleUploader(value.buffer));
+        })
+        Promise.all(arrFiles).then(log => {
+            cb(null, cst.SUCCESS_CODE, cst.GET_SUCCESS, log);
+        }).catch(err => {
+            cb(null, cst.FAILURE_CODE, cst.GET_FAILURE, cst.NULL_OBJECT);
+        })
     }
 
     Upload.remoteMethod("single", {
@@ -35,6 +50,17 @@ module.exports = function (Upload) {
         accepts: [
             { arg: 'req', type: 'object', 'http': { source: 'req' } },
             { arg: 'res', type: 'object', 'http': { source: 'res' } }
+        ],
+        returns: [
+            { arg: "status", type: "number" },
+            { arg: "message", type: "string" },
+            { arg: "data", type: "object" }
+        ]
+    })
+    Upload.remoteMethod("destroy", {
+        http: { path: "/destroy", verb: "POST" },
+        accepts: [
+            { arg: "id", type: "string", required: true }
         ],
         returns: [
             { arg: "status", type: "number" },

@@ -26,7 +26,33 @@ function middlewareUpload(req, res, next) {
         else next(null, result);
     }).end(req.file.buffer);
 }
-
+/**
+ * upload using buffer
+ * @param {Buffer} buffer 
+ */
+function middleUploader(buffer) {
+    return new Promise(function (resolve, reject) {
+        cloudinary.v2.uploader.upload_stream((err, result) => {
+            if (err) reject(err)
+            else resolve(result)
+        }).end(buffer);
+    })
+}
+/**
+ * upload using buffer
+ * @param {string} id 
+ */
+function middleUploadDestroy(public_id) {
+    return new Promise(function (resolve, reject) {
+        cloudinary.v2.uploader.destroy(public_id,
+            function (error, result) {
+                if (error) reject(error);
+                else resolve(result)
+            });
+    })
+}
 module.exports = {
-    middlewareUpload
+    middlewareUpload,
+    middleUploader,
+    middleUploadDestroy
 }

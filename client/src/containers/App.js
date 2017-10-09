@@ -7,7 +7,6 @@ import Header from './components/Header'
 import Footer from './components/Footer'
 import Modal from "./components/modal"
 // const bus = _bus.bus({ url: "amqp://wugaruqk:1WfsfZum9rQKHhBiq5Z4OvJ6ZkFqn9Gc@rhino.rmq.cloudamqp.com/wugaruqk" });
-
 // var Stomp = require('stomp-client');
 // var destination = '/queue/notifyQueue';
 // var client = new Stomp({
