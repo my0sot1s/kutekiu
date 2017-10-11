@@ -1,5 +1,13 @@
 {
     "name": "AccessToken",
+    "base": "Model",
+    "idInjection": true,
+    "options": {
+        "validateUpsert": true,
+        "mysql": {
+            "table": "AccessToken"
+        }
+    },
     "properties": {
         "id": {
             "type": "string",
@@ -25,7 +33,7 @@
     "relations": {
         "user": {
             "type": "belongsTo",
-            "model": "User",
+            "model": "UserInfo",
             "foreignKey": "userId"
         }
     },

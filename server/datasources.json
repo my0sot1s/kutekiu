@@ -36,6 +36,16 @@
     "connector": "mongodb",
     "allowExtendedOperators": true
   },
+  "mysqlNode": {
+    "host": "${MYSQL_HOST}",
+    "port": "${MYSQL_PORT}",
+    "url": "${MYSQL_URL}",
+    "database": "${MYSQL_DBNAME}",
+    "password": "${MYSQL_PASSWORD}",
+    "name": "mysqlNode",
+    "user": "${MYSQL_USER}",
+    "connector": "mysql"
+  },
   "EmailDataSource": {
     "name": "EmailDataSource",
     "connector": "mail",

@@ -5,8 +5,8 @@
   "idInjection": true,
   "options": {
     "validateUpsert": true,
-    "mongodb": {
-      "collection": "UserInfo"
+    "mysql": {
+      "table": "UserInfo"
     }
   },
   "hidden": [
@@ -14,6 +14,9 @@
     "verificationToken"
   ],
   "properties": {
+    "id": {
+      "type": "number"
+    },
     "username": {
       "type": "string",
       "required": true
@@ -25,7 +28,7 @@
     "email": {
       "type": "string"
     },
-    "std": {
+    "phone": {
       "type": "string"
     },
     "gender": {
@@ -38,11 +41,13 @@
       "type": "string"
     },
     "dateCreated": {
-      "type": "date"
+      "type": "date",
+      "defaultFn": "now"
     },
     "permisstion": {
       "type": "number"
     },
+    "verificationToken": "string",
     "status": {
       "type": "boolean"
     }

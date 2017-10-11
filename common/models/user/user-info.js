@@ -8,6 +8,7 @@ var path = require('path');
 var qs = require('querystring');
 var SALT_WORK_FACTOR = 10;
 var crypto = require('crypto');
+var app = require('../../../server/server');
 // bcrypt's max length is 72 bytes;
 // See https://github.com/kelektiv/node.bcrypt.js/blob/45f498ef6dc6e8234e58e07834ce06a50ff16352/src/node_blf.h#L59
 var MAX_PASSWORD_LENGTH = 72;
@@ -1344,11 +1345,25 @@ module.exports = function (UserInfo) {
             })
         })
     };
+    UserInfo.registeAccessToken = function (option) {
+        return new Promise(function (resolve, reject) {
+            var userSettings = UserInfo.prototype.constructor.settings;
+            var tokenData = {};
+            tokenData.userId = option.id;
+            tokenData.ttl = Math.min(tokenData.ttl || userSettings.ttl, userSettings.maxTTL);
+            app.models.AccessToken.create(tokenData, option, function (err, accessTokenData) {
+                if (err) reject(null);
+                else {
+                    resolve(accessTokenData);
+                }
+            });
+        });
+    };
     UserInfo.register = function (username, email, password, cb) {
         var response = {};
         UserInfo.createUserInfo({ username, password, email })
             .then(function (user) {
-                return UserInfo.createAccessToken(user);
+                return UserInfo.registeAccessToken(user);
             })
             .then(function (token) {
                 if (token !== undefined) {
@@ -1356,11 +1371,11 @@ module.exports = function (UserInfo) {
                     cb(null, 200, "Register success", response);
 
                 } else {
-                    cb(null, 201, "Register failed", {})
+                    cb(null, 201, "Register failed 1", {})
                 }
             })
             .catch(function (error) {
-                cb(null, 201, "Register failed", {})
+                cb(null, 201, "Register failed 2", {})
             })
     };
 

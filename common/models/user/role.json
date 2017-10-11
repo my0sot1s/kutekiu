@@ -1,5 +1,13 @@
 {
     "name": "Role",
+    "base": "Model",
+    "idInjection": true,
+    "options": {
+        "validateUpsert": true,
+        "mysql": {
+            "table": "Role"
+        }
+    },
     "properties": {
         "id": {
             "type": "string",

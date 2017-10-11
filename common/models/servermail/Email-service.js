@@ -2,7 +2,6 @@
 
 const cst = require("../../../utils/constants");
 const app = require("../../../server/server");
-const logger = require("../../../utils/logger");
 const { sendToQueue, listenMessage, publishToFan, subscibeATopic } = require("../../../utils/network");
 /**
  * kết nối tới rabbitmq
@@ -49,7 +48,7 @@ module.exports = function (Emailservice) {
     Emailservice.autoMail = function () {
         listenMessage(cst.QUEUE_EMAIL, function (payload) {
             // do st
-            logger(JSON.stringify(payload));
+            app.models.SystemLogs.logger(JSON.stringify(payload));
         });
     }
     Emailservice.autoMail();

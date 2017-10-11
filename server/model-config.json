@@ -58,26 +58,26 @@
     "public": true
   },
   "AccessToken": {
-    "dataSource": "mongo_user",
+    "dataSource": "mysqlNode",
     "public": false
   },
   "ACL": {
-    "dataSource": "mongo_user",
+    "dataSource": "mysqlNode",
     "public": false
   },
   "RoleMapping": {
-    "dataSource": "mongo_user",
+    "dataSource": "mysqlNode",
     "public": false,
     "options": {
       "strictObjectIDCoercion": true
     }
   },
   "Role": {
-    "dataSource": "mongo_user",
+    "dataSource": "mysqlNode",
     "public": false
   },
   "UserInfo": {
-    "dataSource": "mongo_user",
+    "dataSource": "mysqlNode",
     "public": true
   },
   "EmailService": {

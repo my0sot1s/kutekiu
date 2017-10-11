@@ -1,11 +1,22 @@
 {
   "name": "RoleMapping",
   "description": "Map principals to roles",
+  "base": "Model",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true,
+    "mysql": {
+      "table": "RoleMapping"
+    }
+  },
   "properties": {
     "id": {
       "type": "string",
       "id": true,
       "generated": true
+    },
+    "accessType": {
+      "type": "string"
     },
     "principalType": {
       "type": "string",
@@ -14,6 +25,15 @@
     "principalId": {
       "type": "string",
       "index": true
+    },
+    "permission": {
+      "type": "string"
+    },
+    "property": {
+      "type": "string"
+    },
+    "roleId": {
+      "type": "number"
     }
   },
   "relations": {

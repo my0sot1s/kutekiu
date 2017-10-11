@@ -1,6 +1,17 @@
 {
     "name": "ACL",
+    "base": "Model",
+    "idInjection": true,
+    "options": {
+        "validateUpsert": true,
+        "mysql": {
+            "table": "ACL"
+        }
+    },
     "properties": {
+        "id": {
+            "type": "number"
+        },
         "model": {
             "type": "string",
             "description": "The name of the model"
