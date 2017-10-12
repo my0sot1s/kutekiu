@@ -35,7 +35,7 @@
   },
   "Notes": {
     "dataSource": "mongo_base",
-    "public": true
+    "public": false
   },
   "Blog": {
     "dataSource": "mongo_base",
@@ -43,19 +43,19 @@
   },
   "Center": {
     "dataSource": "mongo_base",
-    "public": true
+    "public": false
   },
   "Foods": {
     "dataSource": "mongo_base",
-    "public": true
+    "public": false
   },
   "Stories": {
     "dataSource": "mongo_base",
-    "public": true
+    "public": false
   },
   "StoriesContent": {
     "dataSource": "mongo_base",
-    "public": true
+    "public": false
   },
   "AccessToken": {
     "dataSource": "mysqlNode",
@@ -74,7 +74,7 @@
   },
   "Role": {
     "dataSource": "mysqlNode",
-    "public": false
+    "public": true
   },
   "UserInfo": {
     "dataSource": "mysqlNode",

@@ -15,7 +15,8 @@ var Principal = ctx.Principal;
 var RoleMapping = loopback.RoleMapping;
 
 assert(RoleMapping, 'RoleMapping model must be defined before Role model');
-
+const cst = require("../../../utils/constants");
+const app = require("../../../server/server");
 /**
  * The Role model
  * @class Role
@@ -663,4 +664,106 @@ module.exports = function (Role) {
     };
 
     Role.validatesUniquenessOf('name', { message: 'already exists' });
+
+
+
+    /**
+     * @author te.ng - <manhte231>
+     * 
+     * Các phương thức đươc đinh nghĩa
+     */
+
+
+    /**
+     * @param {number} userId
+     * @param {number} permisstion
+     * @param {cb} cb
+     */
+    Role.assignRoleToUser = function (userId, permission, cb) {
+        Role.checkIdExist(permission).then(doc => {
+            if (!doc) {
+                cb(null, cst.FAILURE_CODE, "Không thể gán quyền. Không tồn tại permission", cst.NULL_OBJECT);
+            } else {
+                app.models.RoleMapping.upsertWithWhere({ principalId: userId }, {
+                    principalType: RoleMapping.USER | "UserInfo",
+                    principalId: userId,
+                    roleId: doc.id,
+                }).then(doc => {
+                    cb(null, cst.SUCCESS_CODE, "Gán quyền thành công", doc);
+                }).catch(err => {
+                    cb(null, cst.FAILURE_CODE, "Không thể gán quyền", err);
+                });
+            }
+        })
+    }
+    Role.checkIdExist = function (id) {
+        return new Promise((resolve, reject) => {
+            Role.findById(id, {
+                fields: ["name", "id"]
+            })
+                .then(doc => {
+                    if (doc) resolve(doc);
+                    else resolve(null)
+                })
+                .catch(err => reject(err))
+        })
+    }
+    Role.checkNameExist = function (roleName) {
+        return new Promise((resolve, reject) => {
+            Role.find({
+                where: {
+                    name: roleName
+                }
+            })
+                .then(doc => {
+                    if (doc.length === 1) resolve(1);
+                    else if (doc.length === 0) resolve(0);
+                    else resolve(2);
+                })
+                .catch(err => reject(err))
+        })
+    }
+    Role.createNewRole = function (name, description, cb) {
+        Role.checkNameExist(name).then(log => {
+            if (log === 0) {
+                Role.create({
+                    name,
+                    description: description | "Tạo role",
+                    created: new Date(),
+                    modified: new Date()
+                }).then(doc => {
+                    cb(null, cst.SUCCESS_CODE, "Tạo thành công", doc);
+                }).catch(err => {
+                    cb(null, cst.FAILURE_CODE, "Không thể tạo role. Không tương tác đc Role", cst.NULL_OBJECT);
+                })
+            }
+            else cb(null, cst.FAILURE_CODE, "Không thể tạo role. Tên Role không hợp lệ", cst.NULL_OBJECT);
+        })
+    }
+    Role.remoteMethod(
+        "assignRoleToUser", {
+            http: { path: "/assignRoleToUser", verb: "POST" },
+            accepts: [
+                { arg: "userId", type: "number", required: true },
+                { arg: "roleId", type: "number", required: true }
+            ],
+            returns: [
+                { arg: "status", type: "number" },
+                { arg: "message", type: "string" },
+                { arg: "data", type: "object" },
+            ]
+        });
+    Role.remoteMethod(
+        "createNewRole", {
+            http: { path: "/createNewRole", verb: "POST" },
+            accepts: [
+                { arg: "name", type: "string", required: true },
+                { arg: "description", type: "string" }
+            ],
+            returns: [
+                { arg: "status", type: "number" },
+                { arg: "message", type: "string" },
+                { arg: "data", type: "object" },
+            ]
+        });
 };

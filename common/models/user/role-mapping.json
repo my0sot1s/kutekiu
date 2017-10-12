@@ -26,9 +26,6 @@
       "type": "string",
       "index": true
     },
-    "permission": {
-      "type": "string"
-    },
     "property": {
       "type": "string"
     },

@@ -1,4 +1,3 @@
-
 /**
  * kết nối tới rabbitmq
  * @callback cb
