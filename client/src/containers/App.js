@@ -25,7 +25,7 @@ class AppBase extends Component {
             <div id="app">
                 {/* <button onClick={() => this.setState({ showModal: !this.state.showModal })}>Show modal</button> */}
                 <Head />
-                <Nav />
+                {/* <Nav /> */}
                 <Container />
                 {/* <ImageUpload showModal={this.state.showModal} /> */}
                 {/* <Footer showModal={this.showModal.bind(this)} /> */}

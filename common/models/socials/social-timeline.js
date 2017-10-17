@@ -64,7 +64,20 @@ module.exports = function (Socialtimeline) {
             })
             .then(doc => {
                 return Promise.map(doc.timeline, post_id => {
-                    return app.models.social_post.findById(post_id)
+                    return app.models.social_post.findById(post_id, {
+                        fields: {
+                            modified: false
+                        }
+                    })
+                })
+            })
+            .then(posts => {
+                return Promise.map(posts, value => {
+                    return app.models.UserInfo.findById(value.user_id, {
+                        fields: ["username", "displayName", "avatar"]
+                    }).then(user => {
+                        return { user, post: value }
+                    })
                 })
             })
             .then(result => {
