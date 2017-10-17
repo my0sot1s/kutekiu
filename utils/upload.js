@@ -40,7 +40,7 @@ function middleUploader(buffer) {
 }
 /**
  * upload using buffer
- * @param {string} id 
+ * @param {string} public_id 
  */
 function middleUploadDestroy(public_id) {
     return new Promise(function (resolve, reject) {

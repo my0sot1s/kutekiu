@@ -10,6 +10,12 @@
     "name": {
       "type": "string"
     },
+    "background": {
+      "type": "string"
+    },
+    "songs": {
+      "type": "array"
+    },
     "src": {
       "type": "string"
     },

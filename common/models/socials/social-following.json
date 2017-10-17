@@ -1,0 +1,17 @@
+{
+  "name": "social_following",
+  "plural": "social_following",
+  "base": "Model",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true,
+    "mongo": {
+      "collection": "social_following"
+    }
+  },
+  "properties": {},
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}

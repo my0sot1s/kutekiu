@@ -47,6 +47,9 @@
     "permisstion": {
       "type": "number"
     },
+    "avatar": {
+      "type": "string"
+    },
     "verificationToken": "string",
     "status": {
       "type": "boolean"

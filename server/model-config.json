@@ -7,8 +7,8 @@
       "./models",
       "../common/models/mongo",
       "./models/mongo",
-      "../common/models/mysql",
-      "./models/mysql",
+      "../common/models/socials",
+      "./models/socials",
       "../common/models/servermail",
       "./models/servermail",
       "../common/models/logs",
@@ -102,6 +102,26 @@
   },
   "Image": {
     "dataSource": "mongo_base",
+    "public": true
+  },
+  "social_post": {
+    "dataSource": "social",
+    "public": true
+  },
+  "social_like": {
+    "dataSource": "social",
+    "public": true
+  },
+  "social_comment": {
+    "dataSource": "social",
+    "public": true
+  },
+  "social_following": {
+    "dataSource": "social",
+    "public": true
+  },
+  "social_timeline": {
+    "dataSource": "social",
     "public": true
   }
 }

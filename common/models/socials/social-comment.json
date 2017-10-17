@@ -1,0 +1,17 @@
+{
+  "name": "social_comment",
+  "plural": "social_comment",
+  "base": "Model",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true,
+    "mongo": {
+      "collection": "social_comment"
+    }
+  },
+  "properties": {},
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}

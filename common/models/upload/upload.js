@@ -5,7 +5,7 @@ const cst = require("../../../utils/constants")
 const multer = require("multer");
 const storage = multer.memoryStorage();
 const upload = multer({ storage, limits: "50mb" });
-const { middlewareUpload, middleUploader,middleUploadDestroy } = require("../../../utils/upload")
+const { middlewareUpload, middleUploader, middleUploadDestroy } = require("../../../utils/upload")
 const MAX_COUNT = 10;
 const multerSingle = upload.single("file");
 const multerArray = upload.array("file", MAX_COUNT);
@@ -21,9 +21,9 @@ module.exports = function (Upload) {
     })
     Upload.destroy = function (id, cb) {
         middleUploadDestroy(id).then(log => {
-            cb(null, cst.SUCCESS_CODE, cst.GET_SUCCESS, log);
+            cb(null, cst.SUCCESS_CODE, cst.POST_SUCCESS, log);
         }).catch(err => {
-            cb(null, cst.SUCCESS_CODE, cst.GET_SUCCESS, result);
+            cb(null, cst.FAILURE_CODE_CODE, cst.POST_FAILURE, err);
         })
     }
     Upload.single = function (req, res, cb) {

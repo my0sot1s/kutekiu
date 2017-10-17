@@ -1,0 +1,37 @@
+{
+  "name": "social_timeline",
+  "base": "Model",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true,
+    "mongo": {
+      "collection": "social_timeline"
+    }
+  },
+  "properties": {
+    "timeline": {
+      "type": "array"
+    },
+    "dateFlow": {
+      "type": "string"
+    }
+  },
+  "validations": [],
+  "relations": {
+    "fk_post": {
+      "type": "belongsTo",
+      "model": "UserInfo",
+      "scope": {
+        "fields": [
+          "id",
+          "username",
+          "displayName",
+          "avatar"
+        ]
+      },
+      "foreignKey": "user_id"
+    }
+  },
+  "acls": [],
+  "methods": {}
+}

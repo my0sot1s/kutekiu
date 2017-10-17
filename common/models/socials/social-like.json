@@ -1,0 +1,30 @@
+{
+  "name": "social_like",
+  "plural": "social_like",
+  "base": "Model",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true,
+    "mongo": {
+      "collection": "social_like"
+    }
+  },
+  "properties": {
+    "post_id": {
+      "type": "string",
+      "required": true
+    },
+    "user_id": {
+      "type": "array",
+      "required": true
+    },
+    "count": {
+      "type": "number",
+      "default": 0
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}

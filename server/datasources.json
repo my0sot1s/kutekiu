@@ -3,14 +3,14 @@
     "name": "db",
     "connector": "memory"
   },
-  "mongo_user": {
-    "host": "${MONGO_HOST_USER}",
-    "port": "${MONGO_PORT_USER}",
-    "url": "${MONGO_URL_USER}",
-    "database": "${MONGO_DBNAME_USER}",
-    "password": "${MONGO_PASSWORD_USER}",
-    "name": "mongo_user",
-    "user": "${MONGO_USER_USER}",
+  "social": {
+    "host": "${MONGO_HOST_SOCIAL}",
+    "port": "${MONGO_PORT_SOCIAL}",
+    "url": "${MONGO_URL_SOCIAL}",
+    "database": "${MONGO_DBNAME_SOCIAL}",
+    "password": "${MONGO_PASSWORD_SOCIAL}",
+    "name": "social",
+    "user": "${MONGO_USER_SOCIAL}",
     "connector": "mongodb",
     "allowExtendedOperators": true
   },
