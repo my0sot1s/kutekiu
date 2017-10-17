@@ -63,7 +63,7 @@ module.exports = function (Socialtimeline) {
                 }
             })
             .then(doc => {
-                return Promise.map(doc.timeline, post_id => {
+                return Promise.map(doc.timeline.reverse(), post_id => {
                     return app.models.social_post.findById(post_id, {
                         fields: {
                             modified: false
