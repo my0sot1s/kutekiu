@@ -5,6 +5,8 @@ import Container from "./content"
 import Head from './components/helmet'
 // import ImageUpload from './ImageUpload'
 import Nav from './components/nav'
+import { BrowserRouter, Route, Link,Switch } from 'react-router-dom';
+import Profile from './profile'
 // import Footer from './components/Footer'
 // import Modal from "./components/modal"
 
@@ -22,15 +24,17 @@ class AppBase extends Component {
     }
     render() {
         return (
-            <div id="app">
-                {/* <button onClick={() => this.setState({ showModal: !this.state.showModal })}>Show modal</button> */}
-                <Head />
-                {/* <Nav /> */}
-                <Container />
-                {/* <ImageUpload showModal={this.state.showModal} /> */}
-                {/* <Footer showModal={this.showModal.bind(this)} /> */}
-                <code>v - 1.0.1</code>
-            </div >
+            <BrowserRouter>
+                <div id="app">
+                    <Head />
+                    <Switch>
+                        <Route path="/profile/:user_id" component={Profile} />
+                        <Route path="/" component={Container} />
+                    </Switch>
+                    <code>v - 1.0.1</code>
+                </div>
+            </BrowserRouter>
+
         );
     }
 }

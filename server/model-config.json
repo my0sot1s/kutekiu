@@ -123,5 +123,9 @@
   "social_timeline": {
     "dataSource": "social",
     "public": true
+  },
+  "social_user": {
+    "dataSource": "social",
+    "public": false
   }
 }

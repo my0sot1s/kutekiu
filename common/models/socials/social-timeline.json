@@ -17,21 +17,7 @@
     }
   },
   "validations": [],
-  "relations": {
-    "fk_post": {
-      "type": "belongsTo",
-      "model": "UserInfo",
-      "scope": {
-        "fields": [
-          "id",
-          "username",
-          "displayName",
-          "avatar"
-        ]
-      },
-      "foreignKey": "user_id"
-    }
-  },
+  "relations": {},
   "acls": [],
   "methods": {}
 }

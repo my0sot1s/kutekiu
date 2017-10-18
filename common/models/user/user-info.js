@@ -1345,6 +1345,17 @@ module.exports = function (UserInfo) {
             })
         })
     };
+    UserInfo.createSocialUser = function (user, cb) {
+        app.models.social_user.create(
+            {
+                user_id: user.userId,
+                username: user.username,
+                created: new Date()
+            }
+        )
+            .then(doc => cb(null, user))
+            .catch(err => cb(err, null))
+    }
     UserInfo.registeAccessToken = function (option) {
         return new Promise(function (resolve, reject) {
             var userSettings = UserInfo.prototype.constructor.settings;
@@ -1365,14 +1376,16 @@ module.exports = function (UserInfo) {
             .then(function (user) {
                 return UserInfo.registeAccessToken(user);
             })
-            .then(function (token) {
-                if (token !== undefined) {
-                    response.access_token = token.id;
-                    cb(null, 200, "Register success", response);
+            .then(token => {
+                UserInfo.createSocialUser(token, (err, doc) => {
+                    if (token !== undefined) {
+                        response.access_token = token.id;
+                        cb(null, 200, "Register success", response);
 
-                } else {
-                    cb(null, 201, "Register failed 1", {})
-                }
+                    } else {
+                        cb(null, 201, "Register failed 1", {})
+                    }
+                })
             })
             .catch(function (error) {
                 cb(null, 201, "Register failed 2", {})

@@ -79,7 +79,8 @@ module.exports = function (Socialtimeline) {
             })
             .then(posts => {
                 return Promise.map(posts, value => {
-                    return app.models.UserInfo.findById(value.user_id, {
+                    return app.models.social_user.findOne({
+                        where: { user_id: value.user_id },
                         fields: ["username", "displayName", "avatar"]
                     }).then(user => {
                         return { user, post: value }

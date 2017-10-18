@@ -1,26 +1,25 @@
 {
-  "name": "social_comment",
-  "plural": "social_comment",
+  "name": "social_user",
   "base": "Model",
   "idInjection": true,
   "options": {
     "validateUpsert": true,
     "mongo": {
-      "collection": "social_comment"
+      "collection": "social_user"
     }
   },
   "properties": {
-    "post_id": {
-      "type": "string"
-    },
     "user_id": {
+      "type": "number"
+    },
+    "displayName": {
+      "type": "number"
+    },
+    "avatar": {
       "type": "string"
     },
-    "content": {
+    "banner": {
       "type": "string"
-    },
-    "created": {
-      "type": "date"
     }
   },
   "validations": [],

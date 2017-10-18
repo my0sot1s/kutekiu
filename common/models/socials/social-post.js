@@ -38,8 +38,9 @@ module.exports = function (Socialpost) {
             }
         })
             .then(doc => {
-                return app.models.UserInfo
-                    .findById(doc.user_id, {
+                return app.models.social_user
+                    .findOne({
+                        where: { user_id: doc.user_id },
                         fields: ["username", "displayName", "avatar"]
                     })
                     .then(user => {
@@ -55,10 +56,10 @@ module.exports = function (Socialpost) {
     }
     Socialpost.getPost = function (user_id, limit, page, cb) {
         Promise.all([
-            app.models.UserInfo
-                .findById(user_id,
+            app.models.social_user.findOne(
                 {
-                    fields: ["username", "displayName", "avatar"]
+                    where: { user_id },
+                    fields: ["username", "displayName", "avatar", "banner"]
                 }),
             Socialpost.find({
                 where: {
