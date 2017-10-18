@@ -1,5 +1,0 @@
-db.getCollection('social_user').create({"user_id":15
-,"displayName":"Tể Nguyễn"
-,"avatar":"http://res.cloudinary.com/telosma/image/upload/v1508249694/public/15622472_1030514373720458_1346459383963009368_n.jpg"
-,created:new Date(),
-,"banner":"http://res.cloudinary.com/telosma/image/upload/v1507458399/Colother/oO7ADDSl.jpg"})
