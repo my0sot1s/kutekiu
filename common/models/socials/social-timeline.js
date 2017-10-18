@@ -9,10 +9,9 @@ const Promise = require("bluebird")
  * @param {date} date 
  */
 function dateProcess(date) {
-    if (!date) date = new Date();
-    var _date = new Date(date);
+    date = new Date(date);
     if (typeof date.getMonth === 'function')
-        return _date.toISOString().slice(0, 10).replace(/-/g, "");
+        return date.toISOString().slice(0, 10).replace(/-/g, "");
     else return new Date().toISOString().slice(0, 10).replace(/-/g, "");
 
 }
@@ -31,7 +30,7 @@ module.exports = function (Socialtimeline) {
      * @param {string} id - là post_id 
      */
     Socialtimeline.pushTimeline = function (id) {
-        let _date = dateProcess(new Date().toDateString())
+        let _date = dateProcess(new Date())
         return new Promise((resolve, reject) => {
             Socialtimeline.findOrCreate({
                 dateFlow: _date
@@ -54,22 +53,29 @@ module.exports = function (Socialtimeline) {
     }
 
     Socialtimeline.getTimeLine = function (date, limit, page, cb) {
-        if (!date) date = new Date();
+        if (!date) date = new Date().toDateString();
+        // var _d = dateProcess(date)
         Socialtimeline
             .findOne({
                 where: {
-                    dateFlow: dateProcess(date.toDateString()),
+                    dateFlow: dateProcess(date),
                     // timeline: { "slice": -2 }
                 }
             })
             .then(doc => {
-                return Promise.map(doc.timeline.reverse(), post_id => {
-                    return app.models.social_post.findById(post_id, {
-                        fields: {
-                            modified: false
-                        }
+                if (!doc) {
+                    cb(null, cst.SUCCESS_CODE, cst.GET_SUCCESS, []);
+                    return;
+                }
+                else {
+                    return Promise.map(doc.timeline.reverse(), post_id => {
+                        return app.models.social_post.findById(post_id, {
+                            fields: {
+                                modified: false
+                            }
+                        })
                     })
-                })
+                }
             })
             .then(posts => {
                 return Promise.map(posts, value => {

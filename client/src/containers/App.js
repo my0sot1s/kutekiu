@@ -29,6 +29,7 @@ class AppBase extends Component {
                 <Container />
                 {/* <ImageUpload showModal={this.state.showModal} /> */}
                 {/* <Footer showModal={this.showModal.bind(this)} /> */}
+                <code>v - 1.0.1</code>
             </div >
         );
     }
