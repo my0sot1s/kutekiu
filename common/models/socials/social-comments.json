@@ -1,20 +1,20 @@
 {
-  "name": "social_comment",
-  "plural": "social_comment",
+  "name": "social_comments",
+  "plural": "social_comments",
   "base": "Model",
   "idInjection": true,
   "options": {
     "validateUpsert": true,
-    "mongo": {
-      "collection": "social_comment"
+    "mongodb": {
+      "collection": "socials_comments"
     }
   },
   "properties": {
     "post_id": {
-      "type": "string"
+      "type": "object"
     },
     "user_id": {
-      "type": "string"
+      "type": "number"
     },
     "content": {
       "type": "string"

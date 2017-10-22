@@ -3,7 +3,9 @@
  * @callback cb
  * @author te.ng <manhte231@gmail.com>
  */
+const cst = require("./constants")
 const { RABBITMQ_USER, RABBITMQ_PW, RABBITMQ_HOST, RABBITMQ_NAME } = process.env;
+
 const url = "amqp://" + RABBITMQ_USER + ":" + RABBITMQ_PW + "@" + RABBITMQ_HOST + "/" + RABBITMQ_NAME;
 // console.log(url)
 const bus = require('servicebus').bus({ url, delayOnStartup: 0, confirmChannel: true });
@@ -53,6 +55,18 @@ function listenMessage(queueName, cb) {
 }
 
 /**
+ * 
+ * @param {string} queue 
+ * @param {object} message 
+ * @param {cb} cb 
+ */
+function request_by_Q(queue, message, cb) {
+    sendToQueue(cst.PREFIX_SOURCES_QUEUE + queue, message);
+    listenMessage(cst.PREFIX_DESTINATIONS_QUEUE + queue, cb);
+}
+
+
+/**
  * publish a object to a topic 
  * any one subscibe that topic can receive message
  * topic can be a string or pattern regex
@@ -94,5 +108,5 @@ function subscibeATopic(topic, cb) {
 
 module.exports = {
     sendToQueue, listenMessage,
-    publishToFan, subscibeATopic
+    publishToFan, subscibeATopic, request_by_Q
 }

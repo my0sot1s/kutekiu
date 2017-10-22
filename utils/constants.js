@@ -23,3 +23,8 @@ module.exports.ROUTINGKEY_USER_NOTIFY = "cms.routingkey_user_notify";
 module.exports.QUEUE_ONLY_USER_NOTIFY = "cms.queue_only_user_notify";
 module.exports.ROUTINGKEY_GROUP_NOTIFY = "cms.routingkey_group_notify";
 
+
+module.exports.PREFIX_SOURCES_QUEUE = "q_marcarita_";
+
+module.exports.PREFIX_DESTINATIONS_QUEUE = "q_arale_";
+

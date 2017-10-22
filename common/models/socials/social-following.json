@@ -5,7 +5,7 @@
   "idInjection": true,
   "options": {
     "validateUpsert": true,
-    "mongo": {
+    "mongodb": {
       "collection": "social_following"
     }
   },

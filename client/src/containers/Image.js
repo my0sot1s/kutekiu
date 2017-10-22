@@ -5,7 +5,7 @@ import * as actions from '../actions/image'
 import Loader from './components/loader'
 import _ from 'lodash';
 import Modal from "./components/modal"
-require("./image.css")
+// require("./image.css")
 
 
 class Image extends Component {

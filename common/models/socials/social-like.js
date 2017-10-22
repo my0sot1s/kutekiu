@@ -6,29 +6,21 @@
  */
 const app = require("../../../server/server");
 const cst = require("../../../utils/constants")
-const multer = require("multer");
-const storage = multer.memoryStorage();
 const Promise = require("bluebird")
-const upload = multer({ storage, limits: "50mb" });
-const { middlewareUpload, middleUploader, middleUploadDestroy } = require("../../../utils/upload")
-const MAX_COUNT = 10;
-const multerArray = upload.array("file", MAX_COUNT);
+const ObjectID = require("mongodb").ObjectID;
 
 module.exports = function (Sociallike) {
 
-    Sociallike.getPostLike = function (id, cb) {
-        Sociallike.find({
-            where: {
-                post_id: id
-            }
-        }).then(doc => {
-            cb(null, cst.SUCCESS_CODE, cst.POST_SUCCESS, { count: doc });
+    Sociallike.getPostLike = function (post_id, cb) {
+        return Sociallike.count({
+            post_id: new ObjectID(post_id)
         })
     }
+
     Sociallike.hitLike = function (post_id, user_id, cb) {
         Sociallike.update({
             where: {
-                post_id
+                post_id: new ObjectID(post_id)
             }
         }, { $inc: { count: 1 }, $push: { user_id } }).then(doc => {
             cb(null, cst.SUCCESS_CODE, cst.POST_SUCCESS, cst.NULL_OBJECT);
@@ -39,7 +31,7 @@ module.exports = function (Sociallike) {
     Sociallike.unlike = function (post_id, user_id, cb) {
         Sociallike.update({
             where: {
-                post_id
+                post_id: new ObjectID(post_id)
             }
         }, { $inc: { count: -1 } }).then(doc => {
             cb(null, cst.SUCCESS_CODE, cst.POST_SUCCESS, cst.NULL_OBJECT);
@@ -52,7 +44,7 @@ module.exports = function (Sociallike) {
         http: { path: "/get_post_like", verb: "POST" },
         description: "Sử dụng qua post man",
         accepts: [
-            { arg: "id", type: "string", required: true, description: "Post_id" }
+            { arg: "post_id", type: "string", required: true, description: "Post_id" }
         ],
         returns: [
             { arg: "status", type: "number" },

@@ -2,7 +2,7 @@
 const app = require("../../../server/server");
 const cst = require("../../../utils/constants")
 const Promise = require("bluebird")
-
+const nw = require("../../../utils/network")
 
 /**
  * 
@@ -48,7 +48,6 @@ module.exports = function (Socialtimeline) {
                 .catch(err => {
                     reject(err)
                 });
-
         })
     }
 
@@ -68,6 +67,10 @@ module.exports = function (Socialtimeline) {
                     return;
                 }
                 else {
+                    // nw.request_by_Q("get2Comment", { post_id: doc.timeline.reverse() }, function (data) {
+                    //     //         debugger
+                    // })
+                    // get all post
                     return Promise.map(doc.timeline.reverse(), post_id => {
                         return app.models.social_post.findById(post_id, {
                             fields: {
@@ -84,7 +87,31 @@ module.exports = function (Socialtimeline) {
                         fields: ["username", "displayName", "avatar"]
                     }).then(user => {
                         return { user, post: value }
-                    })
+                    }).catch(err => err)
+                })
+            })
+            .then(doc => {
+                return Promise.map(doc, p => {
+                    return app.models.social_comments
+                        .getDetailComment(p.post.id.toString())
+                        .then(log => {
+                            return { ...p, comment: { count: log[0], cmt: log[1] } }
+                        })
+                        .catch(err => {
+                            return err;
+                        })
+                })
+            })
+            .then(doc => {
+                return Promise.map(doc, p => {
+                    return app.models.social_like
+                        .getPostLike(p.post.id.toString())
+                        .then(log => {
+                            return { ...p, like: log }
+                        })
+                        .catch(err => {
+                            return err;
+                        })
                 })
             })
             .then(result => {
