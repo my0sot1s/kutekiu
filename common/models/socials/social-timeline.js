@@ -2,7 +2,7 @@
 const app = require("../../../server/server");
 const cst = require("../../../utils/constants")
 const Promise = require("bluebird")
-const nw = require("../../../utils/network")
+const netw = require("../../../utils/network")
 
 /**
  * 
@@ -31,6 +31,7 @@ module.exports = function (Socialtimeline) {
      */
     Socialtimeline.pushTimeline = function (id) {
         let _date = dateProcess(new Date())
+
         return new Promise((resolve, reject) => {
             Socialtimeline.findOrCreate({
                 dateFlow: _date
@@ -54,6 +55,7 @@ module.exports = function (Socialtimeline) {
     Socialtimeline.getTimeLine = function (date, limit, page, cb) {
         if (!date) date = new Date().toDateString();
         // var _d = dateProcess(date)
+        let post_list_id = []
         Socialtimeline
             .findOne({
                 where: {
@@ -67,20 +69,33 @@ module.exports = function (Socialtimeline) {
                     return;
                 }
                 else {
-                    // nw.request_by_Q("get2Comment", { post_id: doc.timeline.reverse() }, function (data) {
-                    //     //         debugger
-                    // })
                     // get all post
-                    return Promise.map(doc.timeline.reverse(), post_id => {
-                        return app.models.social_post.findById(post_id, {
-                            fields: {
-                                modified: false
-                            }
-                        })
-                    })
+                    /**
+                     * @property
+                     * request tới service marcarita lấy dữ liệu
+                     * - lấy 2comment + comment-count
+                     * - lấy  like count
+                     */
+                    netw.sendToQueue(cst.PREFIX_SOURCES_QUEUE + "get2Comment"
+                        , { post_id: doc.timeline.reverse() });
+                    post_list_id = doc.timeline.reverse();
+                    return doc.timeline.reverse()
                 }
             })
+            .then(doc => {
+                // fetch all post trong post list
+                //lấy ra toàn bộ post
+                return Promise.map(doc, post_id => {
+                    return app.models.social_post.findById(post_id, {
+                        fields: {
+                            modified: false
+                        }
+                    })
+                })
+            })
             .then(posts => {
+                // dùng post để lấy người post
+                // 
                 return Promise.map(posts, value => {
                     return app.models.social_user.findOne({
                         where: { user_id: value.user_id },
@@ -90,30 +105,37 @@ module.exports = function (Socialtimeline) {
                     }).catch(err => err)
                 })
             })
-            .then(doc => {
-                return Promise.map(doc, p => {
-                    return app.models.social_comments
-                        .getDetailComment(p.post.id.toString())
-                        .then(log => {
-                            return { ...p, comment: { count: log[0], cmt: log[1] } }
-                        })
-                        .catch(err => {
-                            return err;
-                        })
+            .then(post => {
+                return netw.listenAsync(cst.PREFIX_DESTINATIONS_QUEUE + "get2Comment").then(c => {
+                    return Promise.map(post, (value, index) => {
+                        return { ...value, ...c[index] }
+                    })
                 })
             })
-            .then(doc => {
-                return Promise.map(doc, p => {
-                    return app.models.social_like
-                        .getPostLike(p.post.id.toString())
-                        .then(log => {
-                            return { ...p, like: log }
-                        })
-                        .catch(err => {
-                            return err;
-                        })
-                })
-            })
+            // .then(doc => {
+            //     return Promise.map(doc, p => {
+            //         return app.models.social_comments
+            //             .getDetailComment(p.post.id.toString())
+            //             .then(log => {
+            //                 return { ...p, comment: { count: log[0], cmt: log[1] } }
+            //             })
+            //             .catch(err => {
+            //                 return err;
+            //             })
+            //     })
+            // })
+            // .then(doc => {
+            //     return Promise.map(doc, p => {
+            //         return app.models.social_like
+            //             .getPostLike(p.post.id.toString())
+            //             .then(log => {
+            //                 return { ...p, like: log }
+            //             })
+            //             .catch(err => {
+            //                 return err;
+            //             })
+            //     })
+            // })
             .then(result => {
                 cb(null, cst.SUCCESS_CODE, cst.GET_SUCCESS, result);
             })

@@ -5,7 +5,7 @@
  */
 const cst = require("./constants")
 const { RABBITMQ_USER, RABBITMQ_PW, RABBITMQ_HOST, RABBITMQ_NAME } = process.env;
-
+const Promise = require("bluebird")
 const url = "amqp://" + RABBITMQ_USER + ":" + RABBITMQ_PW + "@" + RABBITMQ_HOST + "/" + RABBITMQ_NAME;
 // console.log(url)
 const bus = require('servicebus').bus({ url, delayOnStartup: 0, confirmChannel: true });
@@ -31,10 +31,10 @@ const OPTIONS = { routingKey: 'cms_notify.broadcast' }
  */
 function sendToQueue(queueName, message) {
     function sendDataToQueue(queue, message) {
-        bus.send(queue, message)
+        return bus.send(queue, message)
     }
     if (Array.isArray(queueName)) {
-        queueName.map(function (queue, index) {
+        return Promise.map(queueName, function (queue) {
             sendDataToQueue(queue, message);
         })
     } else {
@@ -56,13 +56,16 @@ function listenMessage(queueName, cb) {
 
 /**
  * 
- * @param {string} queue 
- * @param {object} message 
+ * @param {string} queueName 
  * @param {cb} cb 
  */
-function request_by_Q(queue, message, cb) {
-    sendToQueue(cst.PREFIX_SOURCES_QUEUE + queue, message);
-    listenMessage(cst.PREFIX_DESTINATIONS_QUEUE + queue, cb);
+function listenAsync(queueName) {
+    return new Promise((resolve, reject) => {
+        bus.listen(queueName, function (event) {
+            if (event) resolve(event);
+            else reject()
+        });
+    })
 }
 
 
@@ -105,8 +108,14 @@ function subscibeATopic(topic, cb) {
     });
 }
 
+function rundemo() {
+    // sendAsync(cst.PREFIX_SOURCES_QUEUE + "111", { hello: 111 })
+    // sendToQueue('1111', { a: 1111 })
+    // listenMessage("1111", doc => { console.log(doc) })
 
+
+}
 module.exports = {
-    sendToQueue, listenMessage,
-    publishToFan, subscibeATopic, request_by_Q
+    sendToQueue, listenMessage, listenAsync, rundemo,
+    publishToFan, subscibeATopic
 }

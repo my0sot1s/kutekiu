@@ -81,16 +81,17 @@ module.exports = function (Socialcomments) {
      * work with queue
      */
 
-    // netw.listenMessage(cst.PREFIX_SOURCES_QUEUE + "get2Comment", (posts_id) => {
-    //     if (posts_id && Array.isArray(posts_id)) {
-    //         return Promise.map(posts_id, p_id => {
-    //             return Socialcomment.get2Comment(p_id)
-    //         }).then(doc => {
-    //             netw.sendToQueue(cst.PREFIX_SOURCES_QUEUE + "get2Comment", doc)
-    //         }).catch(err => {
-    //             console.error(err);
+    // netw.listenMessage(cst.PREFIX_SOURCES_QUEUE + "get2Comment", (params) => {
+    //     if (params.post_id && Array.isArray(params.post_id)) {
+    //         Promise.map(params.post_id, p_id => {
+    //             return Socialcomments.get2Comment(p_id)
     //         })
-    //     }
+    //             .then(doc => {
+    //                 return netw.sendToQueue(cst.PREFIX_DESTINATIONS_QUEUE + "get2Comment", doc)
+    //             }).catch(err => {
+    //                 console.error(err);
+    //             })
+    //     } else console.error("Định dạng message? Lỗi")
     // })
     Socialcomments.remoteMethod("addComment", {
         http: { path: "/add-comment", verb: "post" },
