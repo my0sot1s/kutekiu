@@ -76,10 +76,10 @@ module.exports = function (Socialtimeline) {
                      * - lấy 2comment + comment-count
                      * - lấy  like count
                      */
-                    netw.sendToQueue(cst.PREFIX_SOURCES_QUEUE + "get2Comment"
-                        , { post_id: doc.timeline.reverse() });
-                    console.info("send to queue done!")
-                    post_list_id = doc.timeline.reverse();
+                    // netw.sendToQueue(cst.PREFIX_SOURCES_QUEUE + "get2Comment"
+                    //     , { post_id: doc.timeline.reverse() });
+                    // console.info("send to queue done!")
+                    // post_list_id = doc.timeline.reverse();
                     return doc.timeline.reverse()
                 }
             })
@@ -109,7 +109,6 @@ module.exports = function (Socialtimeline) {
             .then(post => {
                 return netw.listenAsync(cst.PREFIX_DESTINATIONS_QUEUE + "get2Comment").then(c => {
                     return Promise.map(post, (value, index) => {
-                        console.info("get from queue done!");
                         return { ...value, ...c[index] }
                     })
                 })
@@ -139,6 +138,7 @@ module.exports = function (Socialtimeline) {
             //     })
             // })
             .then(result => {
+                console.info("get from queue done!");
                 cb(null, cst.SUCCESS_CODE, cst.GET_SUCCESS, result);
             })
             .catch(err => {
