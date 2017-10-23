@@ -112,30 +112,30 @@ module.exports = function (Socialtimeline) {
                     })
                 })
             })
-            // .then(doc => {
-            //     return Promise.map(doc, p => {
-            //         return app.models.social_comments
-            //             .getDetailComment(p.post.id.toString())
-            //             .then(log => {
-            //                 return { ...p, comment: { count: log[0], cmt: log[1] } }
-            //             })
-            //             .catch(err => {
-            //                 return err;
-            //             })
-            //     })
-            // })
-            // .then(doc => {
-            //     return Promise.map(doc, p => {
-            //         return app.models.social_like
-            //             .getPostLike(p.post.id.toString())
-            //             .then(log => {
-            //                 return { ...p, like: log }
-            //             })
-            //             .catch(err => {
-            //                 return err;
-            //             })
-            //     })
-            // })
+            .then(doc => {
+                return Promise.map(doc, p => {
+                    return app.models.social_comments
+                        .getDetailComment(p.post.id.toString())
+                        .then(log => {
+                            return { ...p, comment: { count: log[0], cmt: log[1] } }
+                        })
+                        .catch(err => {
+                            return err;
+                        })
+                })
+            })
+            .then(doc => {
+                return Promise.map(doc, p => {
+                    return app.models.social_like
+                        .getPostLike(p.post.id.toString())
+                        .then(log => {
+                            return { ...p, like: log }
+                        })
+                        .catch(err => {
+                            return err;
+                        })
+                })
+            })
             .then(result => {
                 cb(null, cst.SUCCESS_CODE, cst.GET_SUCCESS, result);
             })

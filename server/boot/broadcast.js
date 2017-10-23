@@ -44,6 +44,7 @@ module.exports = function (app) {
                     })
                 })
                 .then(doc => {
+                    console.info("\nReaded and sending message!!\n");   
                     return netw.sendToQueue(cst.PREFIX_DESTINATIONS_QUEUE + "get2Comment", doc)
                 }).catch(err => {
                     console.error(err);
