@@ -76,10 +76,10 @@ module.exports = function (Socialtimeline) {
                      * - lấy 2comment + comment-count
                      * - lấy  like count
                      */
-                    // netw.sendToQueue(cst.PREFIX_SOURCES_QUEUE + "get2Comment"
-                    //     , { post_id: doc.timeline.reverse() });
-                    // console.info("send to queue done!")
-                    // post_list_id = doc.timeline.reverse();
+                    netw.sendToQueue(cst.PREFIX_SOURCES_QUEUE + "get2Comment"
+                        , { post_id: doc.timeline.reverse() });
+                    console.info("send to queue done!")
+                    post_list_id = doc.timeline.reverse();
                     return doc.timeline.reverse()
                 }
             })
