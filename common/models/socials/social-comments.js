@@ -25,9 +25,9 @@ module.exports = function (Socialcomments) {
                 cb(null, cst.FAILURE_CODE, cst.GET_FAILURE, err);
             })
     }
-    Socialcomments.getCommentCount = function (post_id) {
-        return Socialcomments.count({ post_id: new ObjectID(post_id) })
-    }
+        Socialcomments.getCommentCount = function (post_id) {
+            return Socialcomments.count({ post_id: new ObjectID(post_id) })
+        }
 
     Socialcomments.getDetailComment = function (post_id) {
         return Promise.all([
