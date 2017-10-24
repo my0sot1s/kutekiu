@@ -235,7 +235,12 @@ module.exports = function (UserInfo) {
                     // See also loopback#161 and loopback#162
                     token.__data.user = user;
                 }
-                var results = user;
+                var results = {
+                    username: user.username,
+                    displayName: user.displayName,
+                    email: user.email,
+                    id: user.id
+                };
                 results.access_token = token.id;
                 var response = {};
                 response.response_code = 200;

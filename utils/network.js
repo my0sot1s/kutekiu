@@ -109,15 +109,14 @@ function subscibeATopic(topic, cb) {
 }
 
 function rundemo() {
-    // sendAsync(cst.PREFIX_SOURCES_QUEUE + "111", { hello: 111 })
     // setInterval(() => {
-    //     sendToQueue('1111', { a: 1111 })
+    //     sendToQueue('1111', { a: "hihi" })
     //     // listenMessage("1111", doc => { console.log(doc) })
     //     listenAsync('1111').then(doc => {
     //         console.log(doc);
     //         // bus.unlisten("1111")
     //     })
-    // }, 1000)
+    // }, 7000)
 
 }
 module.exports = {

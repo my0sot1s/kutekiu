@@ -146,7 +146,6 @@ module.exports = function (Socialtimeline) {
                 console.info("--get from queue done!");
                 // chấm dứt nghe queue
                 cb(null, cst.SUCCESS_CODE, cst.GET_SUCCESS, result);
-                netw.bus.close();
             })
             .catch(err => {
                 return cb(null, cst.FAILURE_CODE, cst.GET_FAILURE, err);
