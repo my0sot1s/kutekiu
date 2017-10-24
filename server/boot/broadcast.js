@@ -45,7 +45,6 @@ module.exports = function (app) {
                 })
                 .then(doc => {
                     console.info("\nReaded and sending message!!\n");
-                    netw.bus.unlisten(cst.PREFIX_SOURCES_QUEUE + "get2Comment");
                     return netw.sendToQueue(cst.PREFIX_DESTINATIONS_QUEUE + "get2Comment", doc)
                 }).catch(err => {
                     return console.error(err);
