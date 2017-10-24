@@ -110,13 +110,13 @@ function subscibeATopic(topic, cb) {
 
 function rundemo() {
     // sendAsync(cst.PREFIX_SOURCES_QUEUE + "111", { hello: 111 })
-    setInterval(() => {
-        sendToQueue('1111', { a: 1111 })
-        // listenMessage("1111", doc => { console.log(doc) })
-        listenAsync('1111').then(doc => {
-            console.log(doc)
-        })
-    }, 1000)
+    // setInterval(() => {
+    //     sendToQueue('1111', { a: 1111 })
+    //     // listenMessage("1111", doc => { console.log(doc) })
+    //     listenAsync('1111').then(doc => {
+    //         console.log(doc)
+    //     })
+    // }, 1000)
 
 }
 module.exports = {
