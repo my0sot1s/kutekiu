@@ -52,11 +52,11 @@ module.exports = function (Socialtimeline) {
         })
     }
 
-    Socialtimeline.getTimeLine = function (date, limit, page, cb) {
+    Socialtimeline.pre_getTimeLine = function (date, limit, page) {
         if (!date) date = new Date().toDateString();
         // var _d = dateProcess(date)
         let post_list_id = []
-        Socialtimeline
+        return Socialtimeline
             .findOne({
                 where: {
                     dateFlow: dateProcess(date),
@@ -118,38 +118,51 @@ module.exports = function (Socialtimeline) {
                     })
                 })
             })
-            // .then(doc => {
-            //     return Promise.map(doc, p => {
-            //         return app.models.social_comments
-            //             .getDetailComment(p.post.id.toString())
-            //             .then(log => {
-            //                 return { ...p, comment: { count: log[0], cmt: log[1] } }
-            //             })
-            //             .catch(err => {
-            //                 return err;
-            //             })
-            //     })
-            // })
-            // .then(doc => {
-            //     return Promise.map(doc, p => {
-            //         return app.models.social_like
-            //             .getPostLike(p.post.id.toString())
-            //             .then(log => {
-            //                 return { ...p, like: log }
-            //             })
-            //             .catch(err => {
-            //                 return err;
-            //             })
-            //     })
-            // })
+        // .then(doc => {
+        //     return Promise.map(doc, p => {
+        //         return app.models.social_comments
+        //             .getDetailComment(p.post.id.toString())
+        //             .then(log => {
+        //                 return { ...p, comment: { count: log[0], cmt: log[1] } }
+        //             })
+        //             .catch(err => {
+        //                 return err;
+        //             })
+        //     })
+        // })
+        // .then(doc => {
+        //     return Promise.map(doc, p => {
+        //         return app.models.social_like
+        //             .getPostLike(p.post.id.toString())
+        //             .then(log => {
+        //                 return { ...p, like: log }
+        //             })
+        //             .catch(err => {
+        //                 return err;
+        //             })
+        //     })
+        // })
+
+        // .then(result => {
+        //     console.info("--get from queue done!");
+        //     // chấm dứt nghe queue
+        //     cb(null, cst.SUCCESS_CODE, cst.GET_SUCCESS, result);
+        // })
+        // .catch(err => {
+        //     return cb(null, cst.FAILURE_CODE, cst.GET_FAILURE, err);
+        // })
+
+    }
+    Socialtimeline.getTimeLine = function (date, limit, page, cb) {
+        Socialtimeline.pre_getTimeLine(date, limit, page)
             .then(result => {
                 console.info("--get from queue done!");
                 // chấm dứt nghe queue
                 cb(null, cst.SUCCESS_CODE, cst.GET_SUCCESS, result);
             })
             .catch(err => {
-                return cb(null, cst.FAILURE_CODE, cst.GET_FAILURE, err);
-            })
+                cb(null, cst.FAILURE_CODE, cst.GET_FAILURE, err);
+            });
 
     }
     Socialtimeline.remoteMethod("getTimeLine", {
