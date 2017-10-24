@@ -117,5 +117,5 @@ function rundemo() {
 }
 module.exports = {
     sendToQueue, listenMessage, listenAsync, rundemo,
-    publishToFan, subscibeATopic
+    publishToFan, subscibeATopic, bus
 }
