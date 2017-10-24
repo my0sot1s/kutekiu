@@ -49,7 +49,7 @@ function sendToQueue(queueName, message) {
  * @param {cb} cb 
  */
 function listenMessage(queueName, cb) {
-    bus.listen(queueName, function (event) {
+    return bus.listen(queueName, function (event) {
         if (event) cb(event);
     });
 }
@@ -61,7 +61,7 @@ function listenMessage(queueName, cb) {
  */
 function listenAsync(queueName) {
     return new Promise((resolve, reject) => {
-        bus.listen(queueName, function (event) {
+        return bus.listen(queueName, function (event) {
             if (event) resolve(event);
             else reject()
         });

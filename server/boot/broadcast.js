@@ -44,11 +44,14 @@ module.exports = function (app) {
                     })
                 })
                 .then(doc => {
-                    console.info("\nReaded and sending message!!\n");   
+                    console.info("\nReaded and sending message!!\n");
                     return netw.sendToQueue(cst.PREFIX_DESTINATIONS_QUEUE + "get2Comment", doc)
                 }).catch(err => {
-                    console.error(err);
+                    return console.error(err);
                 })
-        } else console.error("Định dạng message? Lỗi")
+        } else {
+            console.error("Định dạng message? Lỗi");
+            return;
+        }
     })
 }
