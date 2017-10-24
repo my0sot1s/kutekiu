@@ -45,13 +45,13 @@ module.exports = function (Emailservice) {
 
     // lắng nghe cổng email
     // nếu nhận đc thì gửi
-    Emailservice.autoMail = function () {
-        listenMessage(cst.QUEUE_EMAIL, function (payload) {
-            // do st
-            app.models.SystemLogs.logger(JSON.stringify(payload));
-        });
-    }
-    Emailservice.autoMail();
+    // Emailservice.autoMail = function () {
+    //     listenMessage(cst.QUEUE_EMAIL, function (payload) {
+    //         // do st
+    //         app.models.SystemLogs.logger(JSON.stringify(payload));
+    //     });
+    // }
+    // Emailservice.autoMail();
 
     // setInterval(() => {
     //     i++;
