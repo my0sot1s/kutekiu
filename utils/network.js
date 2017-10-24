@@ -49,7 +49,7 @@ function sendToQueue(queueName, message) {
  * @param {cb} cb 
  */
 function listenMessage(queueName, cb) {
-    bus.listen(queueName, function (event) {
+    return bus.listen(queueName, function (event) {
         if (event) cb(event);
     });
 }
@@ -61,7 +61,7 @@ function listenMessage(queueName, cb) {
  */
 function listenAsync(queueName) {
     return new Promise((resolve, reject) => {
-        bus.listen(queueName, function (event) {
+        return bus.listen(queueName, function (event) {
             if (event) resolve(event);
             else reject()
         });
@@ -110,9 +110,13 @@ function subscibeATopic(topic, cb) {
 
 function rundemo() {
     // sendAsync(cst.PREFIX_SOURCES_QUEUE + "111", { hello: 111 })
-    // sendToQueue('1111', { a: 1111 })
-    // listenMessage("1111", doc => { console.log(doc) })
-
+    setInterval(() => {
+        sendToQueue('1111', { a: 1111 })
+        // listenMessage("1111", doc => { console.log(doc) })
+        listenAsync('1111').then(doc => {
+            console.log(doc)
+        })
+    }, 1000)
 
 }
 module.exports = {

@@ -107,6 +107,11 @@ module.exports = function (Socialtimeline) {
                 })
             })
             .then(post => {
+                // return netw.listenAsync(cst.PREFIX_DESTINATIONS_QUEUE + "get2Comment").then(c => {
+                //     return Promise.map(post, (value, index) => {
+                //         return { ...value, ...c[index] }
+                //     })
+                // })
                 return netw.listenAsync(cst.PREFIX_DESTINATIONS_QUEUE + "get2Comment").then(c => {
                     return Promise.map(post, (value, index) => {
                         return { ...value, ...c[index] }
@@ -139,10 +144,10 @@ module.exports = function (Socialtimeline) {
             // })
             .then(result => {
                 console.info("get from queue done!");
-                cb(null, cst.SUCCESS_CODE, cst.GET_SUCCESS, result);
+                return cb(null, cst.SUCCESS_CODE, cst.GET_SUCCESS, result);
             })
             .catch(err => {
-                cb(null, cst.FAILURE_CODE, cst.GET_FAILURE, err);
+                return cb(null, cst.FAILURE_CODE, cst.GET_FAILURE, err);
             })
 
     }
