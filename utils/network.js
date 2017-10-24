@@ -115,7 +115,7 @@ function rundemo() {
     //     // listenMessage("1111", doc => { console.log(doc) })
     //     listenAsync('1111').then(doc => {
     //         console.log(doc);
-    //         bus.unlisten("1111")
+    //         // bus.unlisten("1111")
     //     })
     // }, 1000)
 
