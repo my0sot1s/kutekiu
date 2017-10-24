@@ -143,7 +143,10 @@ module.exports = function (Socialtimeline) {
             //     })
             // })
             .then(result => {
-                console.info("get from queue done!");
+                console.info("--get from queue done!");
+                // chấm dứt nghe queue
+                netw.bus.unlisten(cst.PREFIX_DESTINATIONS_QUEUE + "get2Comment");
+                // chấm dứt nghe queue done
                 return cb(null, cst.SUCCESS_CODE, cst.GET_SUCCESS, result);
             })
             .catch(err => {

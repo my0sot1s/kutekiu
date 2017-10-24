@@ -51,7 +51,7 @@ module.exports = function (Emailservice) {
             app.models.SystemLogs.logger(JSON.stringify(payload));
         });
     }
-    Emailservice.autoMail();
+    // Emailservice.autoMail();
 
     // setInterval(() => {
     //     i++;

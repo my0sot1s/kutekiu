@@ -114,12 +114,13 @@ function rundemo() {
     //     sendToQueue('1111', { a: 1111 })
     //     // listenMessage("1111", doc => { console.log(doc) })
     //     listenAsync('1111').then(doc => {
-    //         console.log(doc)
+    //         console.log(doc);
+    //         bus.unlisten("1111")
     //     })
     // }, 1000)
 
 }
 module.exports = {
     sendToQueue, listenMessage, listenAsync, rundemo,
-    publishToFan, subscibeATopic
+    publishToFan, subscibeATopic, bus
 }
