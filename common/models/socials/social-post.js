@@ -73,6 +73,35 @@ module.exports = function (Socialpost) {
                 }
             })
         ])
+            .spread((user, post) => ({ user, post }))
+            .then(doc => {
+                return Promise.map(doc.post, p => {
+                    return app.models.social_comments
+                        .getDetailComment(p.id.toString())
+                        .then(log => {
+                            return { post: p, comment: { count: log[0], cmt: log[1] } }
+                        })
+                        .catch(err => {
+                            return err;
+                        })
+                })
+                    .then(doc2 => {
+                        return Promise.map(doc2, (p, index) => {
+                            return app.models.social_like
+                                .getPostLike(p.post.id.toString())
+                                .then(log => {
+                                    return { ...p, like: log }
+                                })
+                                .catch(err => {
+                                    return err;
+                                })
+                        })
+                    })
+                    .then(data => {
+                        return { user: doc.user, data }
+                    })
+            })
+
             .then(doc => {
                 cb(null, cst.SUCCESS_CODE, cst.GET_SUCCESS, doc);
             })
@@ -142,13 +171,14 @@ module.exports = function (Socialpost) {
                 })
             })
             .then(doc => {
-                app.models.social_timeline.pushTimeline(doc.id)
-                    .then(log => {
-                        cb(null, cst.SUCCESS_CODE, cst.POST_SUCCESS, doc);
-                    })
-                    .catch(err => {
-                        cb(null, cst.FAILURE_CODE, cst.POST_FAILURE, err);
-                    })
+                cb(null, cst.SUCCESS_CODE, cst.POST_SUCCESS, doc);
+                // app.models.social_timeline.pushTimeline(doc.id)
+                //     .then(log => {
+                //         cb(null, cst.SUCCESS_CODE, cst.POST_SUCCESS, doc);
+                //     })
+                //     .catch(err => {
+                //         cb(null, cst.FAILURE_CODE, cst.POST_FAILURE, err);
+                //     })
             })
             .catch(err => {
                 cb(null, cst.FAILURE_CODE, cst.POST_FAILURE, err);
