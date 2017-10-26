@@ -112,10 +112,6 @@
     "dataSource": "social",
     "public": true
   },
-  "social_following": {
-    "dataSource": "social",
-    "public": true
-  },
   "social_timeline": {
     "dataSource": "social",
     "public": true
@@ -127,5 +123,9 @@
   "social_comments": {
     "dataSource": "social",
     "public": true
+  },
+  "social_follower": {
+    "dataSource": "social",
+    "public": false
   }
 }

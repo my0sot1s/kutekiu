@@ -22,11 +22,12 @@ module.exports = function (Sociallike) {
             where: {
                 post_id: new ObjectID(post_id)
             }
-        }, { $inc: { count: 1 }, $push: { user_id } }).then(doc => {
-            cb(null, cst.SUCCESS_CODE, cst.POST_SUCCESS, cst.NULL_OBJECT);
-        }).catch(err => {
-            cb(null, cst.FAILURE_CODE, cst.POST_FAILURE, cst.NULL_OBJECT);
-        })
+        }, { $inc: { count: 1 }, $push: { user_id } })
+            .then(doc => {
+                cb(null, cst.SUCCESS_CODE, cst.POST_SUCCESS, cst.NULL_OBJECT);
+            }).catch(err => {
+                cb(null, cst.FAILURE_CODE, cst.POST_FAILURE, cst.NULL_OBJECT);
+            })
     }
     Sociallike.unlike = function (post_id, user_id, cb) {
         Sociallike.update({

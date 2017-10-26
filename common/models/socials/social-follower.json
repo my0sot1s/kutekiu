@@ -1,0 +1,26 @@
+{
+  "name": "social_follower",
+  "base": "Model",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true,
+    "mongodb": {
+      "collection": "social_follower"
+    }
+  },
+  "properties": {
+    "own": {
+      "type": "number"
+    },
+    "follower": {
+      "type": "number"
+    },
+    "created": {
+      "type": "date"
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}

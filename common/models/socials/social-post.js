@@ -39,10 +39,7 @@ module.exports = function (Socialpost) {
         })
             .then(doc => {
                 return app.models.social_user
-                    .findOne({
-                        where: { user_id: doc.user_id },
-                        fields: ["username", "displayName", "avatar"]
-                    })
+                    .getByUser_id(doc.user_id, ["username", "displayName", "avatar"])
                     .then(user => {
                         return { user, post: doc }
                     })
@@ -56,11 +53,8 @@ module.exports = function (Socialpost) {
     }
     Socialpost.getPost = function (user_id, limit, page, cb) {
         Promise.all([
-            app.models.social_user.findOne(
-                {
-                    where: { user_id },
-                    fields: ["username", "displayName", "avatar", "banner"]
-                }),
+            app.models.social_user
+                .getByUser_id(user_id, ["username", "displayName", "avatar", "banner"]),
             Socialpost.find({
                 where: {
                     "user_id": user_id
@@ -190,15 +184,18 @@ module.exports = function (Socialpost) {
      * xóa post
      */
     Socialpost.delPost = function (post_id, cb) {
+        // tìm post
         Socialpost.findById(post_id)
             .then(doc => {
-                // xóa media
+                // xóa media nếu có
                 if (doc.media.length > 0)
                     return Promise.map(doc.media, value => {
+                        // xóa trong kho
                         return middleUploadDestroy(value.public_id)
                     })
                 else cb(null, cst.FAILURE_CODE, cst.POST_FAILURE, cst.NULL_OBJECT);
             }).then(log => {
+                // xóa post
                 return Socialpost.destroyById(post_id)
             })
             .then(log => {

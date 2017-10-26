@@ -12,22 +12,22 @@ const ObjectID = require("mongodb").ObjectID;
 
 
 module.exports = function (Socialcomments) {
-    Socialcomments.getAllComments = function (post_id, limit, page, cb) {
-        Socialcomments.find({
+    /**
+     * Lấy tất cả các comment của post_id
+     */
+    Socialcomments.getComments = function (post_id, limit, page) {
+        return Socialcomments.find({
             where: {
                 post_id: new ObjectID(post_id),
-            }
+            },
+            limit,
+            skip: limit * (page - 1),
+            order: "created DESC"
         })
-            .then(doc => {
-                cb(null, cst.SUCCESS_CODE, cst.GET_SUCCESS, doc);
-            })
-            .catch(err => {
-                cb(null, cst.FAILURE_CODE, cst.GET_FAILURE, err);
-            })
     }
-        Socialcomments.getCommentCount = function (post_id) {
-            return Socialcomments.count({ post_id: new ObjectID(post_id) })
-        }
+    Socialcomments.getCommentCount = function (post_id) {
+        return Socialcomments.count({ post_id: new ObjectID(post_id) })
+    }
 
     Socialcomments.getDetailComment = function (post_id) {
         return Promise.all([
@@ -38,38 +38,44 @@ module.exports = function (Socialcomments) {
 
 
     Socialcomments.get2Comment = function (post_id) {
-
-        return Socialcomments.find({
-            where: {
-                post_id: new ObjectID(post_id)
-            },
-            order: "created DESC",
-            limit: 2,
-            fields: {
-                post_id: false
-            }
-        }).then(doc => {
-            return Promise.map(doc, v => {
-                return app.models.social_user.findOne(
-                    {
-                        where: {
-                            user_id: v.user_id
-                        },
-                        fields: ["displayName", "avatar"]
-                    })
-                    .then(pim => {
-                        return { data: v, user: pim }
-                    })
+        // Lấy 2 comment cuối cùng
+        return Socialcomments
+            .getComments(post_id, 2, 1)
+            .then(doc => {
+                return Promise.map(doc, v => {
+                    return app.models.social_user
+                        .getByUser_id(v.user_id, ["displayName", "avatar"])
+                        .then(pim => {
+                            return { data: v, user: pim }
+                        })
+                })
             })
-        })
     }
-    Socialcomments.addComment = function (user_id, post_id, comment, cb) {
-        Socialcomments.create({
+    Socialcomments.pushComment = function (user_id, post_id, comment) {
+        return Socialcomments.create({
             user_id,
             post_id: new ObjectID(post_id),
             content: comment,
             created: new Date()
         })
+
+    }
+    /**
+     * Rest Define
+     */
+
+    Socialcomments.getAllComments = function (post_id, limit, page, cb) {
+        Socialcomments.getComments(post_id, limit, page)
+            .then(doc => {
+                cb(null, cst.SUCCESS_CODE, cst.GET_SUCCESS, doc);
+            })
+            .catch(err => {
+                cb(null, cst.FAILURE_CODE, cst.GET_FAILURE, err);
+            })
+    }
+
+    Socialcomments.addComment = function (user_id, post_id, comment, cb) {
+        Socialcomments.pushComment(user_id, post_id, comment)
             .then(doc => {
                 cb(null, cst.SUCCESS_CODE, cst.POST_SUCCESS, doc);
             })
@@ -77,22 +83,8 @@ module.exports = function (Socialcomments) {
                 cb(null, cst.FAILURE_CODE, cst.POST_FAILURE, err);
             })
     }
-    /**
-     * work with queue
-     */
+    //-----------------------------------------------//
 
-    // netw.listenMessage(cst.PREFIX_SOURCES_QUEUE + "get2Comment", (params) => {
-    //     if (params.post_id && Array.isArray(params.post_id)) {
-    //         Promise.map(params.post_id, p_id => {
-    //             return Socialcomments.get2Comment(p_id)
-    //         })
-    //             .then(doc => {
-    //                 return netw.sendToQueue(cst.PREFIX_DESTINATIONS_QUEUE + "get2Comment", doc)
-    //             }).catch(err => {
-    //                 console.error(err);
-    //             })
-    //     } else console.error("Định dạng message? Lỗi")
-    // })
     Socialcomments.remoteMethod("addComment", {
         http: { path: "/add-comment", verb: "post" },
         description: "Sử dụng qua post man",

@@ -31,7 +31,6 @@ module.exports = function (Socialtimeline) {
      */
     Socialtimeline.pushTimeline = function (id) {
         let _date = dateProcess(new Date())
-            , demostr = `db.social_timeline.update({"dateFlow" : "20171017"},{"$push":{"timeline":{"$each":['111'],"$position":0}}})`
         return new Promise((resolve, reject) => {
             Socialtimeline.findOrCreate({
                 dateFlow: _date
