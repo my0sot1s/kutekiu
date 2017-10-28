@@ -66,6 +66,12 @@
       "principalId": "$authenticated",
       "permission": "ALLOW",
       "property": "createPost"
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW",
+      "property": "getUserPost"
     }
   ],
   "methods": {}

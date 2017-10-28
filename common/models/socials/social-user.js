@@ -25,5 +25,25 @@ module.exports = function (Socialuser) {
                 fields: array_field
             })
     }
+    /**
+     * 
+     * get by username
+     * @param {username} - user_id
+     * @param {array} - array_field
+     * @return theo số lượng field
+     * @using by comment
+     */
+    Socialuser.getByUser_name = function (username, array_field) {
+        username = username.trim()
+        if (!array_field)
+            array_field = ["username", "displayName", "avatar"]
+        return Socialuser.findOne(
+            {
+                where: {
+                    username
+                },
+                fields: array_field
+            })
+    }
 
 };

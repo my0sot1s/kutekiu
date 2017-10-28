@@ -103,6 +103,59 @@ module.exports = function (Socialpost) {
                 cb(null, cst.FAILURE_CODE, cst.GET_FAILURE, err);
             })
     }
+
+    Socialpost.getUserPost = function (username, limit, page, cb) {
+        app.models.social_user
+            .getByUser_name(username, ["user_id", "displayName", "avatar", "banner"])
+            .then(user => {
+                return Socialpost.find({
+                    where: {
+                        "user_id": user.user_id
+                    },
+                    order: "created DESC",
+                    skip: limit && page ? limit * page : 0,
+                    limit,
+                    fields: {
+                        modified: false,
+                    }
+                }).then(post => {
+                    return { post, user }
+                })
+            }).then(doc => {
+                return Promise.map(doc.post, p => {
+                    return app.models.social_comments
+                        .getDetailComment(p.id.toString())
+                        .then(log => {
+                            return { post: p, comment: { count: log[0], cmt: log[1] } }
+                        })
+                        .catch(err => {
+                            return err;
+                        })
+                })
+                    .then(doc2 => {
+                        return Promise.map(doc2, (p, index) => {
+                            return app.models.social_like
+                                .getPostLike(p.post.id.toString())
+                                .then(log => {
+                                    return { ...p, like: log }
+                                })
+                                .catch(err => {
+                                    return err;
+                                })
+                        })
+                    })
+                    .then(data => {
+                        return { user: doc.user, data }
+                    })
+            })
+
+            .then(doc => {
+                cb(null, cst.SUCCESS_CODE, cst.GET_SUCCESS, doc);
+            })
+            .catch(err => {
+                cb(null, cst.FAILURE_CODE, cst.GET_FAILURE, err);
+            })
+    }
     /**
      *  @param {object} req.body
      *  @param {number|string} req.body.user_id
@@ -249,6 +302,20 @@ module.exports = function (Socialpost) {
         description: "Sử dụng qua post man",
         accepts: [
             { arg: "post_id", type: "string", required: true }
+        ],
+        returns: [
+            { arg: "status", type: "number" },
+            { arg: "message", type: "string" },
+            { arg: "data", type: "object" }
+        ]
+    })
+    Socialpost.remoteMethod("getUserPost", {
+        http: { path: "/get-user-post", verb: "get" },
+        description: "Sử dụng qua post man",
+        accepts: [
+            { arg: "username", type: "string", required: true },
+            { arg: "limit", type: "number", default: 5 },
+            { arg: "page", type: "number", default: 0 }
         ],
         returns: [
             { arg: "status", type: "number" },
