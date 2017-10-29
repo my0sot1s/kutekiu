@@ -239,6 +239,7 @@ module.exports = function (UserInfo) {
                     username: user.username,
                     displayName: user.displayName,
                     email: user.email,
+                    avatar: user.avatar,
                     id: user.id
                 };
                 results.access_token = token.id;
