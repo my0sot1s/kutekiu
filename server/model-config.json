@@ -118,7 +118,7 @@
   },
   "social_user": {
     "dataSource": "social",
-    "public": false
+    "public": true
   },
   "social_comments": {
     "dataSource": "social",

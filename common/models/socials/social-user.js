@@ -2,10 +2,85 @@
 
 const app = require("../../../server/server");
 const cst = require("../../../utils/constants")
+const multer = require("multer");
+const storage = multer.memoryStorage();
 const Promise = require("bluebird")
+const upload = multer({ storage, limits: "50mb" });
+const { middlewareUpload, middleUploader, middleUploadDestroy } = require("../../../utils/upload")
+const MAX_COUNT = 10;
+const multerArray = upload.array("file", MAX_COUNT);
 
 module.exports = function (Socialuser) {
 
+    Socialuser.createSocialUser = function (user, username, email, cb) {
+        app.models.social_user.create(
+            {
+                user_id: user.userId,
+                username,
+                email,
+                created: user.created
+            }
+        )
+            .then(doc => cb(null, user))
+            .catch(err => cb(err, null))
+    }
+    /**
+    *  @param {[file]} req.files
+    */
+    Socialuser.beforeRemote("updateSocialUser", function (ctx, any, next) {
+        // đẩy nội dung media vào req
+        multerArray(ctx.req, ctx.res, next)
+    })
+    Socialuser.updateSocialUser = function (req, res, cb) {
+        let arrFiles = [];
+        req.files.map(value => {
+            arrFiles.push(middleUploader(value.buffer));
+        })
+        /**
+        * @param {array} log
+        */
+        Promise.all(arrFiles)
+            .then(log => {
+                return Promise.map(log, value => {
+                    return {
+                        url: value.url
+                    }
+                })
+            })
+            .then(media => {
+                return Promise.all([
+                    app.models.social_user.updateAll({ user_id: Number(req.body.user_id) }, {
+                        displayName: req.body.displayName,
+                        banner: media[1].url,
+                        avatar: media[0].url,
+                    }),
+                    app.models.UserInfo.updateAll({ id: Number(req.body.user_id) }, {
+                        displayName: req.body.displayName,
+                        avatar: media[0].url,
+                    })
+                ])
+            })
+            .then(log => {
+                cb(null, cst.SUCCESS_CODE, cst.POST_SUCCESS, log);
+            })
+            .catch(function (err) {
+                cb(null, cst.FAILURE_CODE, cst.POST_FAILURE, err);
+            });
+
+    }
+    Socialuser.remoteMethod("updateSocialUser", {
+        http: { path: "/update-social-user", verb: "POST" },
+        description: "Sử dụng qua post man",
+        accepts: [
+            { arg: 'req', type: 'object', 'http': { source: 'req' } },
+            { arg: 'res', type: 'object', 'http': { source: 'res' } }
+        ],
+        returns: [
+            { arg: "status", type: "number" },
+            { arg: "message", type: "string" },
+            { arg: "data", type: "object" }
+        ]
+    })
     /**
      * 
      * get by user_id

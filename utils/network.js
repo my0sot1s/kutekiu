@@ -8,8 +8,18 @@ const { RABBITMQ_USER, RABBITMQ_PW, RABBITMQ_HOST, RABBITMQ_NAME } = process.env
 const Promise = require("bluebird")
 const url = "amqp://" + RABBITMQ_USER + ":" + RABBITMQ_PW + "@" + RABBITMQ_HOST + "/" + RABBITMQ_NAME;
 // console.log(url)
-const bus = require('servicebus').bus({ url, delayOnStartup: 0, confirmChannel: true });
+const servicebus = require('servicebus');
+const retry = require('servicebus-retry');
+let bus = servicebus.bus({
+    url, delayOnStartup: 0,
+    confirmChannel: true
+})
+bus.use(retry({
+    store: new retry.MemoryStore()
+}));
+// const bus = require('servicebus').bus({ url, delayOnStartup: 0, confirmChannel: true });
 const OPTIONS = { routingKey: 'cms_notify.broadcast' }
+
 
 // bus.use(bus.package());
 
@@ -29,9 +39,9 @@ const OPTIONS = { routingKey: 'cms_notify.broadcast' }
  * @param {string|string[]} queueName 
  * @param {{}} message 
  */
-function sendToQueue(queueName, message) {
+function sendToQueue(bus, queueName, message) {
     function sendDataToQueue(queue, message) {
-        return bus.send(queue, message)
+        return bus.send(queue, message, { autoDelete: false })
     }
     if (Array.isArray(queueName)) {
         return Promise.map(queueName, function (queue) {
@@ -48,7 +58,7 @@ function sendToQueue(queueName, message) {
  * @param {string} queueName 
  * @param {cb} cb 
  */
-function listenMessage(queueName, cb) {
+function listenMessage(bus, queueName, cb) {
     return bus.listen(queueName, function (event) {
         if (event) cb(event);
     });
@@ -59,11 +69,15 @@ function listenMessage(queueName, cb) {
  * @param {string} queueName 
  * @param {cb} cb 
  */
-function listenAsync(queueName) {
+function listenAsync(bus, queueName) {
     return new Promise((resolve, reject) => {
-        return bus.listen(queueName, function (event) {
-            if (event) resolve(event);
-            else reject()
+        return bus.listen(queueName, { ack: true }, function (event) {
+            event.handle.acknowledge(function () {
+                // console.log('acked message ' + msg.cid);
+                resolve(event);
+            });
+            // if (event) resolve(event);
+            // else reject()
         });
     })
 }
@@ -110,12 +124,12 @@ function subscibeATopic(topic, cb) {
 
 function rundemo() {
     // setInterval(() => {
-    //     sendToQueue('1111', { a: "hihi" })
-    //     // listenMessage("1111", doc => { console.log(doc) })
-    //     listenAsync('1111').then(doc => {
-    //         console.log(doc);
-    //         // bus.unlisten("1111")
-    //     })
+    sendToQueue('1111', { a: "hihi" })
+    // listenMessage("1111", doc => { console.log(doc) })
+    listenAsync('1111').then(doc => {
+        console.log(doc);
+        // bus.unlisten("1111")
+    })
     // }, 7000)
 
 }
