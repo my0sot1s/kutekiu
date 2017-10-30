@@ -16,6 +16,8 @@ module.exports = function (Socialcomments) {
      * Lấy tất cả các comment của post_id
      */
     Socialcomments.getComments = function (post_id, limit, page) {
+        if (!limit) limit = 10;
+        if (!page) page = 1;
         return Socialcomments.find({
             where: {
                 post_id: new ObjectID(post_id),
@@ -66,6 +68,14 @@ module.exports = function (Socialcomments) {
 
     Socialcomments.getAllComments = function (post_id, limit, page, cb) {
         Socialcomments.getComments(post_id, limit, page)
+            .then(doc => {
+                return Promise.map(doc, (item) => {
+                    return app.models.social_user.getByUser_id(item.user_id)
+                        .then(perItem => {
+                            return { comment: item, user: perItem }
+                        })
+                })
+            })
             .then(doc => {
                 cb(null, cst.SUCCESS_CODE, cst.GET_SUCCESS, doc);
             })
