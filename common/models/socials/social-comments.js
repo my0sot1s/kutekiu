@@ -31,6 +31,7 @@ module.exports = function (Socialcomments) {
         return Socialcomments.count({ post_id: new ObjectID(post_id) })
     }
 
+
     Socialcomments.getDetailComment = function (post_id) {
         return Promise.all([
             Socialcomments.getCommentCount(post_id),
@@ -69,12 +70,29 @@ module.exports = function (Socialcomments) {
     Socialcomments.getAllComments = function (post_id, limit, page, cb) {
         Socialcomments.getComments(post_id, limit, page)
             .then(doc => {
+                let list_user = []
                 return Promise.map(doc, (item) => {
-                    return app.models.social_user.getByUser_id(item.user_id)
-                        .then(perItem => {
-                            return { comment: item, user: perItem }
-                        })
+                    list_user.push({ user_id: item.user_id })
                 })
+                    .then(() => {
+                        // sàng lọc các user_trùng
+                        return list_user.filter((value, index, self) =>
+                            self.findIndex(t => { return value.user_id === t.user_id; }) === index)
+                    })
+                    .then(list_user => {
+                        // lấy đc danh sách [{user_id}]
+                        return app.models.social_user
+                            .getUserInfoByListUser(list_user)
+                            .then(user_info => {
+                                return Promise.map(doc, (item) => {
+                                    return app.models.social_user
+                                        .findUser(item.user_id, user_info)
+                                        .then(user => {
+                                            return { user: user[0], comment: item }
+                                        })
+                                })
+                            })
+                    })
             })
             .then(doc => {
                 cb(null, cst.SUCCESS_CODE, cst.GET_SUCCESS, doc);

@@ -12,6 +12,32 @@ const multerArray = upload.array("file", MAX_COUNT);
 
 module.exports = function (Socialuser) {
 
+
+    /**
+     * @desc - Cho vào danh sách user_id và chỉ đọc database 1 lần
+     * @param {[number]} - list_user [user_id:15,'user_id':16]
+     */
+    Socialuser.getUserInfoByListUser = function (list_user, array_field) {
+        if (!array_field)
+            array_field = ["username", "displayName", "avatar"]
+        return Socialuser.find({
+            where: {
+                or: list_user
+            },
+            fields: array_field
+        })
+    }
+    /**
+         * @desc - Cho vào danh sách user_id và chỉ đọc database 1 lần
+         * @param {[number]} - list_user [user_id:15,'user_id':16]
+         */
+    Socialuser.findUser = function (user_id, list_user) {
+        return Promise.map(list_user, user => {
+            if (user.user_id === user_id) return user;
+        })
+    }
+
+
     Socialuser.createSocialUser = function (user, username, email, cb) {
         app.models.social_user.create(
             {
