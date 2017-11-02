@@ -32,8 +32,11 @@ module.exports = function (Socialuser) {
          * @param {[number]} - list_user [user_id:15,'user_id':16]
          */
     Socialuser.findUser = function (user_id, list_user) {
+        let userSelection = {}
         return Promise.map(list_user, user => {
-            if (user.user_id === user_id) return user;
+            if (user.user_id === user_id) userSelection = user;
+        }).then(() => {
+            return userSelection
         })
     }
 

@@ -82,13 +82,13 @@ module.exports = function (Socialcomments) {
                     .then(list_user => {
                         // lấy đc danh sách [{user_id}]
                         return app.models.social_user
-                            .getUserInfoByListUser(list_user)
+                            .getUserInfoByListUser(list_user, ["user_id", "username", "displayName", "avatar"])
                             .then(user_info => {
                                 return Promise.map(doc, (item) => {
                                     return app.models.social_user
                                         .findUser(item.user_id, user_info)
                                         .then(user => {
-                                            return { user: user[0], comment: item }
+                                            return { user, comment: item }
                                         })
                                 })
                             })

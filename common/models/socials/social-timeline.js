@@ -132,7 +132,7 @@ module.exports = function (Socialtimeline) {
                                     return app.models.social_user
                                         .findUser(item.user_id, user_info)
                                         .then(user => {
-                                            return { user: user[0], post: item }
+                                            return { user, post: item }
                                         })
                                 })
                             })
