@@ -109,14 +109,36 @@ module.exports = function (Socialtimeline) {
             .then(posts => {
                 // dùng post để lấy người post
                 // 
-                return Promise.map(posts, value => {
-                    return app.models.social_user.findOne({
-                        where: { user_id: value.user_id },
-                        fields: ["username", "displayName", "avatar"]
-                    }).then(user => {
-                        return { user, post: value }
-                    }).catch(err => err)
+                let list_user = [];
+                return Promise.map(posts, item => {
+                    // return app.models.social_user.findOne({
+                    //     where: { user_id: value.user_id },
+                    //     fields: ["username", "displayName", "avatar"]
+                    // }).then(user => {
+                    //     return { user, post: value }
+                    // }).catch(err => err)
+                    list_user.push({ user_id: item.user_id })
                 })
+                    .then(() => {
+                        return list_user.filter((value, index, self) =>
+                            self.findIndex(t => { return value.user_id === t.user_id; }) === index)
+                    })
+                    .then(list_user => {
+                        // lấy đc danh sách [{user_id}]
+                        return app.models.social_user
+                            .getUserInfoByListUser(list_user, ["user_id", "username", "displayName", "avatar"])
+                            .then(user_info => {
+                                return Promise.map(posts, (item) => {
+                                    return app.models.social_user
+                                        .findUser(item.user_id, user_info)
+                                        .then(user => {
+                                            return { user: user[0], post: item }
+                                        })
+                                })
+                            })
+                    })
+
+
             })
             // .then(post => {
             //     // return netw.listenAsync(cst.PREFIX_DESTINATIONS_QUEUE + "get2Comment").then(c => {
