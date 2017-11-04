@@ -168,6 +168,12 @@ module.exports = function (Socialpost) {
      */
     Socialpost.createPost = function (req, res, cb) {
         let arrFiles = [];
+        if (!req.body.user_id) {
+            cb(null, cst.FAILURE_CODE, cst.POST_FAILURE, "Không có xác thực"); return;
+        }
+        if (!req.files || req.files.length === 0) {
+            cb(null, cst.FAILURE_CODE, cst.POST_FAILURE, "Không có media"); return;
+        }
         if (req.files) {
             req.files.map(value => {
                 arrFiles.push(middleUploader(value.buffer));
