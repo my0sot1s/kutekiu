@@ -9,7 +9,7 @@ const cst = require("../../../utils/constants")
 const Promise = require("bluebird");
 const netw = require("../../../utils/network")
 const ObjectID = require("mongodb").ObjectID;
-
+const GET_FIRST = 1;
 
 module.exports = function (Socialcomments) {
     /**
@@ -43,7 +43,7 @@ module.exports = function (Socialcomments) {
     Socialcomments.get2Comment = function (post_id) {
         // Lấy 2 comment cuối cùng
         return Socialcomments
-            .getComments(post_id, 2, 1)
+            .getComments(post_id, GET_FIRST, 1)
             .then(doc => {
                 return Promise.map(doc, v => {
                     return app.models.social_user
