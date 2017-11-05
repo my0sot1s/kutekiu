@@ -70,29 +70,32 @@ module.exports = function (Socialcomments) {
     Socialcomments.getAllComments = function (post_id, limit, page, cb) {
         Socialcomments.getComments(post_id, limit, page)
             .then(doc => {
-                let list_user = []
-                return Promise.map(doc, (item) => {
-                    list_user.push({ user_id: item.user_id })
-                })
-                    .then(() => {
-                        // sàng lọc các user_trùng
-                        return list_user.filter((value, index, self) =>
-                            self.findIndex(t => { return value.user_id === t.user_id; }) === index)
+                let list_user = [];
+                if (doc.length === 0) {
+                    return [];
+                } else
+                    return Promise.map(doc, (item) => {
+                        list_user.push({ user_id: item.user_id })
                     })
-                    .then(list_user => {
-                        // lấy đc danh sách [{user_id}]
-                        return app.models.social_user
-                            .getUserInfoByListUser(list_user, ["user_id", "username", "displayName", "avatar"])
-                            .then(user_info => {
-                                return Promise.map(doc, (item) => {
-                                    return app.models.social_user
-                                        .findUser(item.user_id, user_info)
-                                        .then(user => {
-                                            return { user, comment: item }
-                                        })
+                        .then(() => {
+                            // sàng lọc các user_trùng
+                            return list_user.filter((value, index, self) =>
+                                self.findIndex(t => { return value.user_id === t.user_id; }) === index)
+                        })
+                        .then(list_user => {
+                            // lấy đc danh sách [{user_id}]
+                            return app.models.social_user
+                                .getUserInfoByListUser(list_user, ["user_id", "username", "displayName", "avatar"])
+                                .then(user_info => {
+                                    return Promise.map(doc, (item) => {
+                                        return app.models.social_user
+                                            .findUser(item.user_id, user_info)
+                                            .then(user => {
+                                                return { user, comment: item }
+                                            })
+                                    })
                                 })
-                            })
-                    })
+                        })
             })
             .then(doc => {
                 cb(null, cst.SUCCESS_CODE, cst.GET_SUCCESS, doc);
