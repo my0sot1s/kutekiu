@@ -18,7 +18,6 @@ module.exports = function (Sociallike) {
      * @param {[{user:{},post:{post_id:string},comment:{},like:number,liked?:boolean}]} - list_post 
      */
     Sociallike.getLikeByListPost = function (list_post, user_id) {
-        var user_id = getCurrentUserId();
         return Promise.map(list_post, (item, index) => {
             // get list post_id
             item.like = 0;
