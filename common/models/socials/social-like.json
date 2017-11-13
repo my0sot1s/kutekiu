@@ -15,12 +15,12 @@
       "required": true
     },
     "user_id": {
-      "type": "array",
+      "type": "number",
       "required": true
     },
-    "count": {
-      "type": "number",
-      "default": 0
+    "created": {
+      "type": "date",
+      "required": true
     }
   },
   "validations": [

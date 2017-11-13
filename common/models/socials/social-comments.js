@@ -70,14 +70,14 @@ module.exports = function (Socialcomments) {
     Socialcomments.getAllComments = function (post_id, limit, page, cb) {
         Socialcomments.getComments(post_id, limit, page)
             .then(doc => {
-                let list_user = [];
+                // let list_user = [];
                 if (doc.length === 0) {
                     return [];
                 } else
                     return Promise.map(doc, (item) => {
-                        list_user.push({ user_id: item.user_id })
+                        return { user_id: item.user_id }
                     })
-                        .then(() => {
+                        .then((list_user) => {
                             // sàng lọc các user_trùng
                             return list_user.filter((value, index, self) =>
                                 self.findIndex(t => { return value.user_id === t.user_id; }) === index)

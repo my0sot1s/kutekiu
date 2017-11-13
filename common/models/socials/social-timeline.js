@@ -51,7 +51,7 @@ module.exports = function (Socialtimeline) {
         })
     }
 
-    Socialtimeline.pre_getTimeLine = function (date, limit, page) {
+    Socialtimeline.pre_getTimeLine = function (user_id, date, limit, page) {
         if (!date) date = new Date().toDateString();
         var str_date = dateProcess(date), skip = limit * (page - 1)
         let post_list_id = []
@@ -165,17 +165,23 @@ module.exports = function (Socialtimeline) {
                 })
             })
             .then(doc => {
-                return Promise.map(doc, p => {
-                    return app.models.social_like
-                        .getPostLike(p.post.id.toString())
-                        .then(log => {
-                            return { ...p, like: log }
-                        })
-                        .catch(err => {
-                            return err;
-                        })
-                })
+                return app.models.social_like
+                    .getLikeByListPost(doc, user_id)
+                // .then(ret => { })
+                // .then()
             })
+        // .then(doc => {
+        //     return Promise.map(doc, p => {
+        //         return app.models.social_like
+        //             .getPostLike(p.post.id.toString())
+        //             .then(log => {
+        //                 return { ...p, like: log }
+        //             })
+        //             .catch(err => {
+        //                 return err;
+        //             })
+        //     })
+        // })
 
         // .then(result => {
         //     console.info("--get from queue done!");
@@ -187,8 +193,8 @@ module.exports = function (Socialtimeline) {
         // })
 
     }
-    Socialtimeline.getTimeLine = function (date, limit, page, cb) {
-        Socialtimeline.pre_getTimeLine(date, limit, page)
+    Socialtimeline.getTimeLine = function (user_id, date, limit, page, cb) {
+        Socialtimeline.pre_getTimeLine(user_id, date, limit, page)
             .then(result => {
                 console.info("--get from queue done!");
                 // chấm dứt nghe queue
@@ -203,6 +209,7 @@ module.exports = function (Socialtimeline) {
         http: { path: "/getTimeLine", verb: "get" },
         description: "Sử dụng qua post man",
         accepts: [
+            { arg: "user_id", type: "number" },
             { arg: "date", type: "string" },
             { arg: "limit", type: "number", default: 4 },
             { arg: "page", type: "number", default: 1 },

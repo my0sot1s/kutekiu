@@ -181,6 +181,7 @@ module.exports = function (Socialpost) {
         } else {
             Socialpost.create({
                 user_id: req.body.user_id,
+                tag: req.body.tag,// process tag
                 post_content: req.body.post_content,
                 created: Date.now(),
                 modified: Date.now(),
