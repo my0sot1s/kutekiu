@@ -37,12 +37,13 @@ module.exports = function (Sociallike) {
             /**
              * độ phức tạp là On^2
              */
-            return Promise.map(doc, (like_doc) => {
-                return Promise.map(list_post, post_doc => {
+            return Promise.map(list_post, post_doc => {
+
+                return Promise.map(doc, like_doc => {
                     if (post_doc.post.id.toHexString() === like_doc.post_id.toHexString()) {
                         post_doc.like++;
                     }
-                    if (user_id === like_doc.user_id) {
+                    if (user_id === like_doc.user_id && post_doc.post.id.toHexString() === like_doc.post_id.toHexString()) {
                         post_doc.liked = true;
                     }
                 })
@@ -82,7 +83,6 @@ module.exports = function (Sociallike) {
                         created: new Date()
                     })
                 else
-
                     return Sociallike.destroyById(doc.id.toHexString())
 
             })

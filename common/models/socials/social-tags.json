@@ -1,0 +1,30 @@
+{
+  "name": "social_tags",
+  "plural": "social_tags",
+  "base": "Model",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true,
+    "mongodb": {
+      "collection": "social_tags"
+    }
+  },
+  "properties": {
+    "tag": {
+      "type": "string"
+    },
+    "post_list": {
+      "type": "array"
+    },
+    "created": {
+      "type": "string"
+    },
+    "descriptions": {
+      "type": "string"
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}
