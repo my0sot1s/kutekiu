@@ -74,12 +74,14 @@ module.exports = function (Socialtimeline) {
      * @param{number} user_id
      */
     Socialtimeline.getPostWithTimeline = function (user_id) {
-        return Socialtimeline.find({
-            where: {
-                consumer_id: user_id
-            },
-            fields: ['post_id']
-        })
+        if (isNaN(user_id)) return Promise.resolve(null)
+        else
+            return Socialtimeline.find({
+                where: {
+                    consumer_id: user_id
+                },
+                fields: ['post_id']
+            })
     }
     Socialtimeline.pre_getUserTimeLine = function (user_id, date, limit, page) {
         if (!date) date = new Date().toDateString();
