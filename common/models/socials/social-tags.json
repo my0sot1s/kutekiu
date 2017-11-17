@@ -1,30 +1,27 @@
 {
-  "name": "social_tags",
-  "plural": "social_tags",
-  "base": "Model",
-  "idInjection": true,
-  "options": {
-    "validateUpsert": true,
-    "mongodb": {
-      "collection": "social_tags"
-    }
-  },
-  "properties": {
-    "tag": {
-      "type": "string"
+    "name": "social_tags",
+    "plural": "social_tags",
+    "base": "Model",
+    "idInjection": true,
+    "options": {
+        "validateUpsert": true,
+        "mongodb": {
+            "collection": "social_tags"
+        }
     },
-    "post_list": {
-      "type": "array"
+    "properties": {
+        "tag": {
+            "type": "string"
+        },
+        "created": {
+            "type": "string"
+        },
+        "post_id": {
+            "type": "string"
+        }
     },
-    "created": {
-      "type": "string"
-    },
-    "descriptions": {
-      "type": "string"
-    }
-  },
-  "validations": [],
-  "relations": {},
-  "acls": [],
-  "methods": {}
+    "validations": [],
+    "relations": {},
+    "acls": [],
+    "methods": {}
 }

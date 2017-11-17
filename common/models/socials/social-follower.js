@@ -11,21 +11,21 @@ const cst = require("../../../utils/constants")
 const Promise = require("bluebird")
 
 /**
- * 
+ *
  * cấu trúc được quy định như sau:
  * own: - là user_id của chủ sở hữu.
  * follower - là user_id của những ng theo dõi own.
- * quan hệ: 1(own)----> n(follower) 
- * 
- * 
- * 
- * 
+ * quan hệ: 1(own)----> n(follower)
+ *
+ *
+ *
+ *
  */
 module.exports = function (Socialfollower) {
 
     /**
      * Lấy ra danh sách các người theo dõi bạn
-     * lấy tất cả follower 
+     * lấy tất cả follower
      * @param {string} own - user_id của bạn
      */
     Socialfollower.allFollowers = function (own) {
@@ -51,18 +51,18 @@ module.exports = function (Socialfollower) {
     }
     /**
      * Tiến hành follow user_id
-     * @param {number} own - id của user được follow 
-     * @param {number} user_id - id của user bấm follow 
+     * @param {number} own - id của user được follow
+     * @param {number} user_id - id của user bấm follow
      */
     Socialfollower.doFollow = function (own, user_id) {
         return Socialfollower.findOrCreate({
             own,
             follower: user_id,
         }, {
-                own,
-                follower: user_id,
-                created: new Date()
-            })
+            own,
+            follower: user_id,
+            created: new Date()
+        })
         // return Socialfollower.create({
         //     own,
         //     follower: user_id,
@@ -71,8 +71,8 @@ module.exports = function (Socialfollower) {
     }
     /**
      * kiêm tra quan hệ follow user_id và own
-     * @param {number} own - id của user được follow 
-     * @param {number} user_id - id của user bấm follow 
+     * @param {number} own - id của user được follow
+     * @param {number} user_id - id của user bấm follow
      * @return {1} own -> user_id @description tôi follow user_id
      * @return {0} own <-> user_id @description chúng tôi là bạn
      * @return {2} user_id -> own @description  user_id follow tôi
@@ -82,7 +82,7 @@ module.exports = function (Socialfollower) {
     Socialfollower.isFollow = function (own, user_id) {
         /**
          * với 1 lượt truy vấn.
-         * nếu array 
+         * nếu array
          * =2 bạn bè.
          * =1 -> process.
          * =0 || null -> ko có quan hệ
@@ -120,8 +120,8 @@ module.exports = function (Socialfollower) {
         })
     }
     // /**
-    // * @param {number} own - id của user được follow 
-    // * @param {number} user_id - id của user bấm follow 
+    // * @param {number} own - id của user được follow
+    // * @param {number} user_id - id của user bấm follow
     // */
     // Socialfollower.unfollow = function (own, user_id) {
     //     return Socialfollower.isFollow(own, user_id)

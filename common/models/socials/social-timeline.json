@@ -1,23 +1,26 @@
 {
-  "name": "social_timeline",
-  "base": "Model",
-  "idInjection": true,
-  "options": {
-    "validateUpsert": true,
-    "mongodb": {
-      "collection": "social_timeline"
-    }
-  },
-  "properties": {
-    "timeline": {
-      "type": "array"
+    "name": "social_timeline",
+    "base": "Model",
+    "idInjection": true,
+    "options": {
+        "validateUpsert": true,
+        "mongodb": {
+            "collection": "social_timeline"
+        }
     },
-    "dateFlow": {
-      "type": "string"
-    }
-  },
-  "validations": [],
-  "relations": {},
-  "acls": [],
-  "methods": {}
+    "properties": {
+        "comsumer_id": {
+            "type": "number"
+        },
+        "post_id": {
+            "type": "string"
+        },
+        "created": {
+            "type": "date"
+        }
+    },
+    "validations": [],
+    "relations": {},
+    "acls": [],
+    "methods": {}
 }
