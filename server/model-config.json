@@ -126,7 +126,7 @@
   },
   "social_follower": {
     "dataSource": "social",
-    "public": false
+    "public": true
   },
   "social_tags": {
     "dataSource": "social",

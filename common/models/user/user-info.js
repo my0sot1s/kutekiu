@@ -239,7 +239,6 @@ module.exports = function (UserInfo) {
                     username: user.username,
                     displayName: user.displayName,
                     email: user.email,
-                    avatar: user.avatar,
                     id: user.id
                 };
                 results.access_token = token.id;
@@ -1100,7 +1099,7 @@ module.exports = function (UserInfo) {
 
                             return tokenID;
                         }, description: 'Do not supply this argument, it is automatically extracted ' +
-                        'from request headers.',
+                            'from request headers.',
                     },
                 ],
                 http: { verb: 'all' },
@@ -1379,18 +1378,18 @@ module.exports = function (UserInfo) {
                         cb(null, 200, "Register success", response);
 
                     } else {
-                        cb(null, 201, "Register failed 1", {})
+                        cb(null, 201, "Register failed token is undefined", {})
                     }
                 })
             })
             .catch(function (error) {
-                cb(null, 201, "Register failed 2", {})
+                cb(null, 201, "Register failed ", error)
             })
     };
 
     UserInfo.remoteMethod("register", {
         description: 'Create a new instance of the model and persist ' +
-        'it into the data source.',
+            'it into the data source.',
         status: 201,
         errorStatus: 400,
         accepts: [

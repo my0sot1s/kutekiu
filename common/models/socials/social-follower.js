@@ -37,6 +37,15 @@ module.exports = function (Socialfollower) {
             fields: "follower",
         })
     }
+    Socialfollower.getAllFollowers = function (own, cb) {
+        Socialfollower.allFollowers(own)
+            .then(doc => {
+                cb(null, cst.SUCCESS_CODE, cst.GET_SUCCESS, doc);
+            })
+            .catch(err => {
+                cb(null, cst.FAILURE_CODE, cst.GET_FAILURE, err);
+            })
+    }
     /**
      * Lấy ra danh sách các người bạn đang theo dõi
      */
@@ -49,6 +58,14 @@ module.exports = function (Socialfollower) {
             fields: "own",
         })
     }
+    Socialfollower.getAllOwn = function (user_id, cb) {
+        Socialfollower.allOwn(user_id).then(doc => {
+            cb(null, cst.SUCCESS_CODE, cst.GET_SUCCESS, doc);
+        })
+            .catch(err => {
+                cb(null, cst.FAILURE_CODE, cst.GET_FAILURE, err);
+            })
+    }
     /**
      * Tiến hành follow user_id
      * @param {number} own - id của user được follow
@@ -56,18 +73,34 @@ module.exports = function (Socialfollower) {
      */
     Socialfollower.doFollow = function (own, user_id) {
         return Socialfollower.findOrCreate({
-            own,
-            follower: user_id,
+            where: {
+                own,
+                follower: user_id,
+            }
         }, {
-            own,
-            follower: user_id,
-            created: new Date()
-        })
-        // return Socialfollower.create({
-        //     own,
-        //     follower: user_id,
-        //     created: new Date()
-        // })
+                own,
+                follower: user_id,
+                created: new Date()
+            }).then(doc => {
+                if (!doc[1]) {
+                    return Socialfollower.destroyAll({
+                        own,
+                        follower: user_id,
+                    }).then(doc => {
+                        return doc[0]
+                    })
+                }
+                return Promise.resolve(doc[0])
+            })
+    }
+    Socialfollower.follow = function (own, user_id, cb) {
+        Socialfollower.doFollow(own, user_id)
+            .then(doc => {
+                cb(null, cst.SUCCESS_CODE, cst.POST_SUCCESS, doc);
+            })
+            .catch(err => {
+                cb(null, cst.FAILURE_CODE, cst.POST_FAILURE, err);
+            })
     }
     /**
      * kiêm tra quan hệ follow user_id và own
@@ -139,4 +172,41 @@ module.exports = function (Socialfollower) {
     //             }
     //         })
     // }
+    Socialfollower.remoteMethod("getAllFollowers", {
+        http: { path: "/all-follower", verb: "get" },
+        description: "Lấy tất cả người đang theo dõi ban",
+        accepts: [
+            { arg: "own", type: "number", required: true },
+        ],
+        returns: [
+            { arg: "status", type: "number" },
+            { arg: "message", type: "string" },
+            { arg: "data", type: "object" }
+        ]
+    })
+    Socialfollower.remoteMethod("getAllOwn", {
+        http: { path: "/all-own", verb: "get" },
+        description: "Lấy tất cả người bạn đang theo dõi",
+        accepts: [
+            { arg: "user_id", type: "number", required: true },
+        ],
+        returns: [
+            { arg: "status", type: "number" },
+            { arg: "message", type: "string" },
+            { arg: "data", type: "object" }
+        ]
+    })
+    Socialfollower.remoteMethod("follow", {
+        http: { path: "/follow", verb: "post" },
+        description: "tiến hành theo dõi user_id follow own",
+        accepts: [
+            { arg: "own", type: "number", required: true },
+            { arg: "user_id", type: "number", required: true },
+        ],
+        returns: [
+            { arg: "status", type: "number" },
+            { arg: "message", type: "string" },
+            { arg: "data", type: "object" }
+        ]
+    })
 };

@@ -6,7 +6,7 @@ const multer = require("multer");
 const storage = multer.memoryStorage();
 const Promise = require("bluebird")
 const upload = multer({ storage, limits: "50mb" });
-const { middlewareUpload, middleUploader, middleUploadDestroy } = require("../../../utils/upload")
+const { uploadToUserAlbum, middleUploadDestroy } = require("../../../utils/upload")
 const MAX_COUNT = 10;
 const multerArray = upload.array("file", MAX_COUNT);
 
@@ -47,7 +47,8 @@ module.exports = function (Socialuser) {
                 user_id: user.userId,
                 username,
                 email,
-                created: user.created
+                created: user.created,
+                album_name: `@${username}_${user.userId}`
             }
         )
             .then(doc => cb(null, user))
@@ -61,21 +62,10 @@ module.exports = function (Socialuser) {
         multerArray(ctx.req, ctx.res, next)
     })
     Socialuser.updateSocialUser = function (req, res, cb) {
-        let arrFiles = [];
-        req.files.map(value => {
-            arrFiles.push(middleUploader(value.buffer));
-        })
         /**
         * @param {array} log
         */
-        Promise.all(arrFiles)
-            .then(log => {
-                return Promise.map(log, value => {
-                    return {
-                        url: value.url
-                    }
-                })
-            })
+        uploadToUserAlbum(req.files, req.body.user_id, `common`)
             .then(media => {
                 return Promise.all([
                     app.models.social_user.updateAll({ user_id: Number(req.body.user_id) }, {
@@ -84,8 +74,7 @@ module.exports = function (Socialuser) {
                         avatar: media[0].url,
                     }),
                     app.models.UserInfo.updateAll({ id: Number(req.body.user_id) }, {
-                        displayName: req.body.displayName,
-                        avatar: media[0].url,
+                        displayName: req.body.displayName
                     })
                 ])
             })

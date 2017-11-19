@@ -1,6 +1,7 @@
 {
   "name": "social_follower",
   "base": "Model",
+  "plural": "social_follower",
   "idInjection": true,
   "options": {
     "validateUpsert": true,

@@ -20,6 +20,9 @@
     },
     "banner": {
       "type": "string"
+    },
+    "album_name": {
+      "type": "string"
     }
   },
   "validations": [],

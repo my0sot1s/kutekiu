@@ -9,8 +9,8 @@ const cst = require("../../../utils/constants")
 const multer = require("multer");
 const storage = multer.memoryStorage();
 const Promise = require("bluebird")
-const upload = multer({storage, limits: "50mb"});
-const {middlewareUpload, middleUploader, middleUploadDestroy} = require("../../../utils/upload")
+const upload = multer({ storage, limits: "50mb" });
+const { uploadToUserAlbum, middleUploadDestroy } = require("../../../utils/upload")
 const MAX_COUNT = 10;
 const multerArray = upload.array("file", MAX_COUNT);
 
@@ -41,7 +41,7 @@ module.exports = function (Socialpost) {
                 return app.models.social_user
                     .getByUser_id(doc.user_id, ["username", "displayName", "avatar"])
                     .then(user => {
-                        return {user, post: doc}
+                        return { user, post: doc }
                     })
             })
             .then(sss => {
@@ -67,13 +67,13 @@ module.exports = function (Socialpost) {
                 }
             })
         ])
-            .spread((user, post) => ({user, post}))
+            .spread((user, post) => ({ user, post }))
             .then(doc => {
                 return Promise.map(doc.post, p => {
                     return app.models.social_comments
                         .getDetailComment(p.id.toString())
                         .then(log => {
-                            return {post: p, comment: {count: log[0], cmt: log[1]}}
+                            return { post: p, comment: { count: log[0], cmt: log[1] } }
                         })
                         .catch(err => {
                             return err;
@@ -84,7 +84,7 @@ module.exports = function (Socialpost) {
                             return app.models.social_like
                                 .getPostLike(p.post.id.toString())
                                 .then(log => {
-                                    return {...p, like: log}
+                                    return { ...p, like: log }
                                 })
                                 .catch(err => {
                                     return err;
@@ -92,7 +92,7 @@ module.exports = function (Socialpost) {
                         })
                     })
                     .then(data => {
-                        return {user: doc.user, data}
+                        return { user: doc.user, data }
                     })
             })
 
@@ -119,35 +119,35 @@ module.exports = function (Socialpost) {
                         modified: false,
                     }
                 }).then(post => {
-                    return {post, user}
+                    return { post, user }
                 })
             }).then(doc => {
-            return Promise.map(doc.post, p => {
-                return app.models.social_comments
-                    .getDetailComment(p.id.toString())
-                    .then(log => {
-                        return {post: p, comment: {count: log[0], cmt: log[1]}}
+                return Promise.map(doc.post, p => {
+                    return app.models.social_comments
+                        .getDetailComment(p.id.toString())
+                        .then(log => {
+                            return { post: p, comment: { count: log[0], cmt: log[1] } }
+                        })
+                        .catch(err => {
+                            return err;
+                        })
+                })
+                    .then(doc2 => {
+                        return Promise.map(doc2, (p, index) => {
+                            return app.models.social_like
+                                .getPostLike(p.post.id.toString())
+                                .then(log => {
+                                    return { ...p, like: log }
+                                })
+                                .catch(err => {
+                                    return err;
+                                })
+                        })
                     })
-                    .catch(err => {
-                        return err;
+                    .then(data => {
+                        return { user: doc.user, data }
                     })
             })
-                .then(doc2 => {
-                    return Promise.map(doc2, (p, index) => {
-                        return app.models.social_like
-                            .getPostLike(p.post.id.toString())
-                            .then(log => {
-                                return {...p, like: log}
-                            })
-                            .catch(err => {
-                                return err;
-                            })
-                    })
-                })
-                .then(data => {
-                    return {user: doc.user, data}
-                })
-        })
 
             .then(doc => {
                 cb(null, cst.SUCCESS_CODE, cst.GET_SUCCESS, doc);
@@ -176,80 +176,37 @@ module.exports = function (Socialpost) {
             cb(null, cst.FAILURE_CODE, cst.POST_FAILURE, "Không có media");
             return;
         }
-        if (req.files) {
-            req.files.map(value => {
-                arrFiles.push(middleUploader(value.buffer));
-            })
-        } else {
-            Socialpost.create({
-                user_id: req.body.user_id,
-                tag: req.body.tag,// process tag
-                post_content: req.body.post_content,
-                created: Date.now(),
-                modified: Date.now(),
-                media: []
-            })
-                .then(doc => {
-                    // app.models.social_timeline.pushTimeline(doc.id)
-                    cb(null, cst.SUCCESS_CODE, cst.POST_SUCCESS, doc);
-                    return doc;
-                })
-                .then(doc => {
-                    // Insert dữ liệu vào bảng newFeed
-                    // dữ liệu post sẽ đẩy vào những người follow bạn
-                    return app.models.social_follower
-                        .allFollowers(doc.user_id)
-                        .then(list_user => {
-                            return app.models
-                                .createUserTimeLine(doc.id, list_user);
-                        })
-                })
-                .catch(err => {
-                    cb(null, cst.FAILURE_CODE, cst.POST_FAILURE, err);
-                })
-        }
         /**
          * @param {array} log
          */
-        Promise.all(arrFiles)
-            .then(log => {
-                return Promise.map(log, value => {
-                    return {
-                        public_id: value.public_id,
-                        signature: value.signature,
-                        width: value.width,
-                        height: value.height,
-                        format: value.format,
-                        bytes: value.bytes,
-                        url: value.url,
-                    }
-                })
-            })
+        uploadToUserAlbum(req.files, req.body.user_id, `common`, JSON.parse(req.body.tags))
             .then(media => {
                 return Socialpost.create({
                     user_id: req.body.user_id,
                     post_content: req.body.post_content,
                     created: Date.now(),
                     modified: Date.now(),
-                    tag: req.body.tag,// process tag
+                    tags: JSON.parse(req.body.tags),// process tag
                     media
                 })
-            })
-            .then(doc => {
-                cb(null, cst.SUCCESS_CODE, cst.POST_SUCCESS, doc);
-                return doc;
             })
             .then(doc => {
                 // Insert dữ liệu vào bảng newFeed
                 // dữ liệu post sẽ đẩy vào những người follow bạn
                 return app.models.social_follower
-                    .allFollowers(doc.user_id)
+                    .allFollowers(req.body.user_id)
                     .then(list_user => {
-                        return app.models.createUserTimeLine
-                            .pushTimeline(doc.id, list_user);
+                        return app.models.social_timeline
+                            .createUserTimeLine(doc.id, list_user);
 
-                    })
+                    }).then(() => {
+                        return doc;
+                    });
             })
+            .then(doc => {
+                cb(null, cst.SUCCESS_CODE, cst.POST_SUCCESS, doc);
+            })
+
             .catch(err => {
                 cb(null, cst.FAILURE_CODE, cst.POST_FAILURE, err);
             })
@@ -269,81 +226,83 @@ module.exports = function (Socialpost) {
                         // xóa trong kho
                         return middleUploadDestroy(value.public_id)
                     })
-                else cb(null, cst.FAILURE_CODE, cst.POST_FAILURE, cst.NULL_OBJECT);
-            }).then(log => {
-            // xóa post
-            return Socialpost.destroyById(post_id)
-        })
+                else cb(null, cst.FAILURE_CODE, cst.POST_FAILURE, `không có media`);
+            })
             .then(log => {
-                cb(null, cst.SUCCESS_CODE, cst.POST_SUCCESS, {post_id});
+                // xóa post
+                cb(null, cst.SUCCESS_CODE, cst.POST_SUCCESS, { post_id });
+                Promise.all([
+                    Socialpost.destroyById(post_id),
+                    app.models.social_comments.deleteAllCommentOfPost(post_id)
+                ])
             })
             .catch(function (err) {
-                cb(null, cst.FAILURE_CODE, cst.POST_FAILURE, cst.NULL_OBJECT);
+                cb(null, cst.FAILURE_CODE, cst.POST_FAILURE, err);
             });
     }
     Socialpost.remoteMethod("createPost", {
-        http: {path: "/create-post", verb: "POST"},
+        http: { path: "/create-post", verb: "POST" },
         description: "Sử dụng qua post man",
         accepts: [
-            {arg: 'req', type: 'object', 'http': {source: 'req'}},
-            {arg: 'res', type: 'object', 'http': {source: 'res'}}
+            { arg: 'req', type: 'object', 'http': { source: 'req' } },
+            { arg: 'res', type: 'object', 'http': { source: 'res' } }
         ],
         returns: [
-            {arg: "status", type: "number"},
-            {arg: "message", type: "string"},
-            {arg: "data", type: "object"}
+            { arg: "status", type: "number" },
+            { arg: "message", type: "string" },
+            { arg: "data", type: "object" }
         ]
     })
     Socialpost.remoteMethod("delPost", {
-        http: {path: "/del-post", verb: "DELETE"},
+        http: { path: "/del-post", verb: "DELETE" },
         description: "Sử dụng qua post man",
         accepts: [
-            {arg: "post_id", type: "string", required: true},
+            { arg: "post_id", type: "string", required: true },
         ],
         returns: [
-            {arg: "status", type: "number"},
-            {arg: "message", type: "string"},
-            {arg: "data", type: "object"}
+            { arg: "status", type: "number" },
+            { arg: "message", type: "string" },
+            { arg: "data", type: "object" }
         ]
     })
     Socialpost.remoteMethod("getPost", {
-        http: {path: "/get-post", verb: "get"},
+        http: { path: "/get-post", verb: "get" },
         description: "Sử dụng qua post man",
         accepts: [
-            {arg: "user_id", type: "number", required: true},
-            {arg: "limit", type: "number", default: 5},
-            {arg: "page", type: "number", default: 0},
+            { arg: "user_id", type: "number", required: true },
+            { arg: "limit", type: "number", default: 5 },
+            { arg: "page", type: "number", default: 0 },
         ],
         returns: [
-            {arg: "status", type: "number"},
-            {arg: "message", type: "string"},
-            {arg: "data", type: "object"}
+            { arg: "status", type: "number" },
+            { arg: "message", type: "string" },
+            { arg: "data", type: "object" }
         ]
     })
     Socialpost.remoteMethod("getPostById", {
-        http: {path: "/get-post-by-id", verb: "get"},
+        http: { path: "/get-post-by-id", verb: "get" },
         description: "Sử dụng qua post man",
         accepts: [
-            {arg: "post_id", type: "string", required: true}
+            { arg: "post_id", type: "string", required: true }
         ],
         returns: [
-            {arg: "status", type: "number"},
-            {arg: "message", type: "string"},
-            {arg: "data", type: "object"}
+            { arg: "status", type: "number" },
+            { arg: "message", type: "string" },
+            { arg: "data", type: "object" }
         ]
     })
     Socialpost.remoteMethod("getUserPost", {
-        http: {path: "/get-user-post", verb: "get"},
+        http: { path: "/get-user-post", verb: "get" },
         description: "Sử dụng qua post man",
         accepts: [
-            {arg: "username", type: "string", required: true},
-            {arg: "limit", type: "number", default: 5},
-            {arg: "page", type: "number", default: 0}
+            { arg: "username", type: "string", required: true },
+            { arg: "limit", type: "number", default: 5 },
+            { arg: "page", type: "number", default: 0 }
         ],
         returns: [
-            {arg: "status", type: "number"},
-            {arg: "message", type: "string"},
-            {arg: "data", type: "object"}
+            { arg: "status", type: "number" },
+            { arg: "message", type: "string" },
+            { arg: "data", type: "object" }
         ]
     })
 };

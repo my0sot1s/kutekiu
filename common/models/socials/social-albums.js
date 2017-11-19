@@ -11,7 +11,7 @@ const multer = require("multer");
 const storage = multer.memoryStorage();
 const Promise = require("bluebird")
 const upload = multer({ storage, limits: "50mb" });
-const { middlewareUpload, middleUploader, middleUploadDestroy } = require("../../../utils/upload")
+const { middleUploadDestroy, uploadToUserAlbum } = require("../../../utils/upload");
 const MAX_COUNT = 10;
 const multerArray = upload.array("file", MAX_COUNT);
 
@@ -30,40 +30,17 @@ module.exports = function (Socialalbums) {
         // đẩy nội dung media vào req
         multerArray(ctx.req, ctx.res, next)
     });
-    Socialalbums.addMedia = function (files) {
-        let arrFiles = [];
-        if (files) {
-            files.map(value => {
-                arrFiles.push(middleUploader(value.buffer));
-            })
-        } else {
-            return Promise.reject(`No media added ^_^`);
-        }
-        return Promise.all(arrFiles)
-            .then(log => {
-                return Promise.map(log, value => {
-                    return {
-                        public_id: value.public_id,
-                        width: value.width,
-                        height: value.height,
-                        format: value.format,
-                        bytes: value.bytes,
-                        url: value.url,
-                    }
-                })
-            })
-        // .then(media => {
-        //     return Socialalbums.update({ id: req.body.id }, {
-        //         modified: Date.now(),
-        //         $push: { media: { $each: media } }
-        //     })
-        // })
-    }
+    // .then(media => {
+    //     return Socialalbums.update({ id: req.body.id }, {
+    //         modified: Date.now(),
+    //         $push: { media: { $each: media } }
+    //     })
+    // })
     Socialalbums.createAlbum = function (req, res, cb) {
-        if (!req.body.user_id || !req.files || !req.files.length === 0)
+        if (!req.body.album_name || !req.body.user_id || !req.files || !req.files.length === 0)
             cb(null, cst.FAILURE_CODE, cst.POST_FAILURE, "Không hợp lệ");
         else {
-            Socialalbums.addMedia(req.files)
+            uploadToUserAlbum(req.files, req.body.user_id, req.body.album_name, req.body.tags)
                 .then(media => {
                     return Socialalbums.create({
                         album_name: req.body.album_name,
@@ -98,10 +75,10 @@ module.exports = function (Socialalbums) {
         }
     }
     Socialalbums.updateAlbum = function (req, res, cb) {
-        if (!req.body.user_id || !req.body.id || !req.files || !req.files.length === 0)
+        if (!req.body.album_name || !req.body.user_id || !req.body.id || !req.files || !req.files.length === 0)
             cb(null, cst.FAILURE_CODE, cst.POST_FAILURE, "Không hợp lệ");
         else {
-            Socialalbums.addMedia(req.files)
+            uploadToUserAlbum(req.files, req.body.user_id, req.body.album_name)
                 .then(media => {
                     return Socialalbums.create({
                         album_name: req.body.album_name,
@@ -157,6 +134,51 @@ module.exports = function (Socialalbums) {
                 })
         }
     }
+    Socialalbums.getAlbumImages = function (album_id) {
+        Socialalbums.findById(album_id)
+            .then(log => {
+                cb(null, cst.SUCCESS_CODE, cst.POST_SUCCESS, log);
+            }).catch(err => {
+                cb(null, cst.FAILURE_CODE, cst.POST_FAILURE, err);
+            })
+    }
+    Socialalbums.getListAlbumByUser = function (user_id) {
+        Socialalbums.find({
+            where: {
+                author: user_id
+            },
+            fields: ["album_name", "album_description", "created"]
+        })
+            .then(log => {
+                cb(null, cst.SUCCESS_CODE, cst.POST_SUCCESS, log);
+            }).catch(err => {
+                cb(null, cst.FAILURE_CODE, cst.POST_FAILURE, err);
+            })
+    }
+
+
+    Socialalbums.remoteMethod("getAlbumImages", {
+        http: { path: "/get-albums", verb: "GET" },
+        accepts: [
+            { arg: "album_id", type: "string", required: true },
+        ],
+        returns: [
+            { arg: "status", type: "number" },
+            { arg: "message", type: "string" },
+            { arg: "data", type: "object" }
+        ]
+    })
+    Socialalbums.remoteMethod("getListAlbumByUser", {
+        http: { path: "/get-list-albums", verb: "GET" },
+        accepts: [
+            { arg: "user_id", type: "number", required: true },
+        ],
+        returns: [
+            { arg: "status", type: "number" },
+            { arg: "message", type: "string" },
+            { arg: "data", type: "object" }
+        ]
+    })
     Socialalbums.remoteMethod("createAlbum", {
         http: { path: "/create-album", verb: "POST" },
         description: "Sử dụng qua post man",

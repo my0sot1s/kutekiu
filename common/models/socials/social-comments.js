@@ -114,8 +114,38 @@ module.exports = function (Socialcomments) {
                 cb(null, cst.FAILURE_CODE, cst.POST_FAILURE, err);
             })
     }
+    Socialcomments.deleteCommment = function (user_id, post_id, cb) {
+        Socialcomments.destroyAll({
+            user_id,
+            post_id
+        })
+            .then(doc => {
+                cb(null, cst.SUCCESS_CODE, cst.POST_SUCCESS, doc);
+            })
+            .catch(err => {
+                cb(null, cst.FAILURE_CODE, cst.POST_FAILURE, err);
+            })
+    }
+    Socialcomments.deleteAllCommentOfPost = function (post_id) {
+        return Socialcomments.destroyAll({
+            user_id,
+        })
+    }
     //-----------------------------------------------//
 
+    Socialcomments.remoteMethod("deleteCommment", {
+        http: { path: "/del-comment", verb: "delete" },
+        description: "Sử dụng qua post man",
+        accepts: [
+            { arg: "user_id", type: "number", required: true },
+            { arg: "post_id", type: "string", required: true },
+        ],
+        returns: [
+            { arg: "status", type: "number" },
+            { arg: "message", type: "string" },
+            { arg: "data", type: "object" }
+        ]
+    })
     Socialcomments.remoteMethod("addComment", {
         http: { path: "/add-comment", verb: "post" },
         description: "Sử dụng qua post man",
