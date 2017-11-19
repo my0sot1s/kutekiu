@@ -44,7 +44,9 @@
     "password": "${MYSQL_PASSWORD}",
     "name": "mysqlNode",
     "user": "${MYSQL_USER}",
-    "connector": "mysql"
+    "connector": "mysql",
+    "connectTimeout": 20000,
+    "acquireTimeout": 20000
   },
   "EmailDataSource": {
     "name": "EmailDataSource",

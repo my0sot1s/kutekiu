@@ -63,7 +63,7 @@ function uploadWithHttpUrl(url, folder, tags) {
     return new Promise(function (resolve, reject) {
         cloudinary.v2.uploader.upload(url,
             {
-                folder: `social_folders/${folder}`,
+                folder: `${folder}`,
                 tags
             },
             function (error, result) {
