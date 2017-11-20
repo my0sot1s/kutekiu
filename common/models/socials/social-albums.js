@@ -65,7 +65,7 @@ module.exports = function (Socialalbums) {
         else {
             uploadToUserAlbum(req.files, req.body.user_id, req.body.album_name)
                 .then(media => {
-                    return Socialalbums.update({ id: req.body.id }, {
+                    return Socialalbums.updateAll({ id: req.body.id }, {
                         modified: Date.now(),
                         $push: { media: { $each: media } }
                     })
@@ -103,7 +103,7 @@ module.exports = function (Socialalbums) {
         if (!user_id || !id)
             cb(null, cst.FAILURE_CODE, cst.POST_FAILURE, "Không hợp lệ");
         else {
-            return Socialalbums.update({ id }, {
+            return Socialalbums.updateAll({ id }, {
                 album_name,
                 album_description,
                 modified: new Date(),
