@@ -50,9 +50,11 @@ module.exports = function (Socialalbums) {
                         created: new Date(),
                         modified: new Date()
                     })
-                }).then(res => {
+                })
+                .then(res => {
                     cb(null, cst.SUCCESS_CODE, cst.POST_SUCCESS, res);
-                }).catch(err => {
+                })
+                .catch(err => {
                     cb(null, cst.FAILURE_CODE, cst.POST_FAILURE, err);
                 })
         }
@@ -88,9 +90,11 @@ module.exports = function (Socialalbums) {
                         created: new Date(),
                         modified: new Date()
                     })
-                }).then(res => {
+                })
+                .then(res => {
                     cb(null, cst.SUCCESS_CODE, cst.POST_SUCCESS, res);
-                }).catch(err => {
+                })
+                .catch(err => {
                     cb(null, cst.FAILURE_CODE, cst.POST_FAILURE, err);
                 })
         }
@@ -103,11 +107,13 @@ module.exports = function (Socialalbums) {
                 album_name,
                 album_description,
                 modified: new Date(),
-            }).then(res => {
-                cb(null, cst.SUCCESS_CODE, cst.POST_SUCCESS, res);
-            }).catch(err => {
-                cb(null, cst.FAILURE_CODE, cst.POST_FAILURE, err);
             })
+                .then(res => {
+                    cb(null, cst.SUCCESS_CODE, cst.POST_SUCCESS, res);
+                })
+                .catch(err => {
+                    cb(null, cst.FAILURE_CODE, cst.POST_FAILURE, err);
+                })
         }
     }
     Socialalbums.deleteAlbum = function (user_id, id, cb) {

@@ -128,7 +128,7 @@ module.exports = function (Socialcomments) {
     }
     Socialcomments.deleteAllCommentOfPost = function (post_id) {
         return Socialcomments.destroyAll({
-            user_id,
+            post_id: new ObjectID(post_id),
         })
     }
     //-----------------------------------------------//

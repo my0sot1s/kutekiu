@@ -48,16 +48,6 @@
     "connectTimeout": 20000,
     "acquireTimeout": 20000
   },
-  "mysqlNodeLocal": {
-    "host": "${MYSQL_L_HOST}",
-    "port": "${MYSQL_L_PORT}",
-    "url": "${MYSQL_L_URL}",
-    "database": "${MYSQL_L_DBNAME}",
-    "password": "${MYSQL_L_PASSWORD}",
-    "name": "mysqlNode2",
-    "user": "${MYSQL_L_USER}",
-    "connector": "mysql"
-  },
   "EmailDataSource": {
     "name": "EmailDataSource",
     "connector": "mail",

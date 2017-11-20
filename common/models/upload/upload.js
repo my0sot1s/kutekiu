@@ -27,14 +27,14 @@ module.exports = function (Upload) {
         })
     }
     Upload.single = function (req, res, cb) {
-        // middlewareUpload(req, res, function (err, result) {
-        //     if (err) cb(null, cst.FAILURE_CODE, cst.GET_FAILURE, cst.NULL_OBJECT);
-        //     cb(null, cst.SUCCESS_CODE, cst.GET_SUCCESS, result);
-        // })
-        middleUploaderBas64FromBuffer(req.file, res, function (err, result) {
+        middlewareUpload(req, res, function (err, result) {
             if (err) cb(null, cst.FAILURE_CODE, cst.GET_FAILURE, cst.NULL_OBJECT);
             cb(null, cst.SUCCESS_CODE, cst.GET_SUCCESS, result);
         })
+        // middleUploaderBas64FromBuffer(req.file, res, function (err, result) {
+        //     if (err) cb(null, cst.FAILURE_CODE, cst.GET_FAILURE, cst.NULL_OBJECT);
+        //     cb(null, cst.SUCCESS_CODE, cst.GET_SUCCESS, result);
+        // })
     }
     Upload.multiples = function (req, res, cb) {
         // middlewareUpload(req, res);
