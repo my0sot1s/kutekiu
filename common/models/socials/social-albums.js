@@ -58,10 +58,10 @@ module.exports = function (Socialalbums) {
         }
     }
     Socialalbums.addMediaToAlbum = function (req, res, cb) {
-        if (!req.body.user_id || !req.files || !req.files.length === 0)
+        if (!req.body.id || !req.body.album_name || !req.body.user_id || !req.files || !req.files.length === 0)
             cb(null, cst.FAILURE_CODE, cst.POST_FAILURE, "Không hợp lệ");
         else {
-            Socialalbums.addMedia(req.files)
+            uploadToUserAlbum(req.files, req.body.user_id, req.body.album_name)
                 .then(media => {
                     return Socialalbums.update({ id: req.body.id }, {
                         modified: Date.now(),

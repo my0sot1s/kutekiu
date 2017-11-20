@@ -45,6 +45,11 @@ module.exports = function (Socialtimeline) {
                 return Socialtimeline.create(timeline)
             })
     }
+    Socialtimeline.deleteAllTimeLineOfPost = function (post_id) {
+        return Socialtimeline.destroyAll(
+            { post_id }
+        )
+    }
     // /**
     //  * @param {string} id - là post_id
     //  */
@@ -241,7 +246,6 @@ module.exports = function (Socialtimeline) {
             .catch(err => {
                 cb(null, cst.FAILURE_CODE, cst.GET_FAILURE, err);
             });
-
     }
     Socialtimeline.remoteMethod("getTimeLine", {
         http: { path: "/getTimeLine", verb: "get" },

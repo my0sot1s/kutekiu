@@ -62,28 +62,31 @@ module.exports = function (Socialuser) {
         multerArray(ctx.req, ctx.res, next)
     })
     Socialuser.updateSocialUser = function (req, res, cb) {
-        /**
-        * @param {array} log
-        */
-        uploadToUserAlbum(req.files, req.body.user_id, `common`)
-            .then(media => {
-                return Promise.all([
-                    app.models.social_user.updateAll({ user_id: Number(req.body.user_id) }, {
-                        displayName: req.body.displayName,
-                        banner: media[1].url,
-                        avatar: media[0].url,
-                    }),
-                    app.models.UserInfo.updateAll({ id: Number(req.body.user_id) }, {
-                        displayName: req.body.displayName
-                    })
-                ])
-            })
-            .then(log => {
-                cb(null, cst.SUCCESS_CODE, cst.POST_SUCCESS, log);
-            })
-            .catch(function (err) {
-                cb(null, cst.FAILURE_CODE, cst.POST_FAILURE, err);
-            });
+        if (!req.body.user_id || !req.body.displayName)
+            cb(null, cst.FAILURE_CODE, cst.POST_FAILURE, `không đúng định dạng`);
+        else
+            /**
+            * @param {array} log
+            */
+            uploadToUserAlbum(req.files, req.body.user_id, `common`)
+                .then(media => {
+                    return Promise.all([
+                        app.models.social_user.updateAll({ user_id: Number(req.body.user_id) }, {
+                            displayName: req.body.displayName,
+                            banner: media[1].url,
+                            avatar: media[0].url,
+                        }),
+                        app.models.UserInfo.updateAll({ id: Number(req.body.user_id) }, {
+                            displayName: req.body.displayName
+                        })
+                    ])
+                })
+                .then(log => {
+                    cb(null, cst.SUCCESS_CODE, cst.POST_SUCCESS, log);
+                })
+                .catch(function (err) {
+                    cb(null, cst.FAILURE_CODE, cst.POST_FAILURE, err);
+                });
 
     }
     Socialuser.remoteMethod("updateSocialUser", {

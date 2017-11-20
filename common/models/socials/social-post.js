@@ -229,12 +229,16 @@ module.exports = function (Socialpost) {
                 else cb(null, cst.FAILURE_CODE, cst.POST_FAILURE, `không có media`);
             })
             .then(log => {
+                return Promise.all([
+                    Socialpost.destroyById(post_id),// xóa bài
+                    app.models.social_comments.deleteAllCommentOfPost(post_id),// xóa tất cả comment
+                    app.models.social_like.deleteAllLikeOfPost(post_id), // xóa tất cả các like
+                    app.models.social_timeline.deleteAllTimeLineOfPost(post_id), // xóa tất cả các referencers
+                ])
+            })
+            .then(log => {
                 // xóa post
                 cb(null, cst.SUCCESS_CODE, cst.POST_SUCCESS, { post_id });
-                Promise.all([
-                    Socialpost.destroyById(post_id),
-                    app.models.social_comments.deleteAllCommentOfPost(post_id)
-                ])
             })
             .catch(function (err) {
                 cb(null, cst.FAILURE_CODE, cst.POST_FAILURE, err);

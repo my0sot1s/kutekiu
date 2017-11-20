@@ -55,7 +55,11 @@ module.exports = function (Sociallike) {
             })
     }
 
-
+    Sociallike.deleteAllLikeOfPost = function () {
+        return Sociallike.destroyAll({
+            post_id: new ObjectID(post_id)
+        })
+    }
 
     Sociallike.getPostLike = function (post_id) {
         return Sociallike.count({
