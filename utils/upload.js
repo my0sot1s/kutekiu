@@ -97,32 +97,33 @@ function middleUploaderBas64FromBuffer(file, folder, tags) {
 
 function uploadToUserAlbum(files, user_id, folder, tags) {
     if (!folder || folder === "" || folder === 'common') folder = 'common';
-    return getUserAlbum(user_id).then(album_name => {
-        if (!album_name) return Promise.reject(`Cannot find root user album`);
-        else {
-            if (!files)
-                return Promise.reject(`No media added ^_^`);
+    return getUserAlbum(user_id)
+        .then(album_name => {
+            if (!album_name) return Promise.reject(`Cannot find root user album`);
             else {
-                return Promise.map(files, (file, index) => {
-                    return middleUploaderBas64FromBuffer(file, `${album_name}/${folder}`, tags);
-                }).then(fileArray => {
-                    return Promise.all(fileArray)
-                        .then(log => {
-                            return Promise.map(log, value => {
-                                return {
-                                    public_id: value.public_id,
-                                    width: value.width,
-                                    height: value.height,
-                                    format: value.format,
-                                    bytes: value.bytes,
-                                    url: value.url,
-                                }
+                if (!files)
+                    return Promise.reject(`No media added ^_^`);
+                else {
+                    return Promise.map(files, (file, index) => {
+                        return middleUploaderBas64FromBuffer(file, `${album_name}/${folder}`, tags);
+                    }).then(fileArray => {
+                        return Promise.all(fileArray)
+                            .then(log => {
+                                return Promise.map(log, value => {
+                                    return {
+                                        public_id: value.public_id,
+                                        width: value.width,
+                                        height: value.height,
+                                        format: value.format,
+                                        bytes: value.bytes,
+                                        url: value.url,
+                                    }
+                                })
                             })
-                        })
-                })
+                    })
+                }
             }
-        }
-    })
+        })
 }
 // uploadWithHttpUrl(`https://cdn01.muaban.net/images/thumb-detail/201704/22/921/059ccac5991d4c50b2702202994b1875.jpg`,
 //     `test`);

@@ -76,9 +76,9 @@ module.exports = function (Socialuser) {
                             banner: media[1].url,
                             avatar: media[0].url,
                         }),
-                        app.models.UserInfo.updateAll({ id: Number(req.body.user_id) }, {
-                            displayName: req.body.displayName
-                        })
+                        // app.models.UserInfo.updateAll({ id: Number(req.body.user_id) }, {
+                        //     displayName: req.body.displayName
+                        // })
                     ])
                 })
                 .then(log => {
@@ -103,7 +103,7 @@ module.exports = function (Socialuser) {
         ]
     })
     /**
-     * 
+     *
      * get by user_id
      * @param {number} - user_id
      * @param {array} - array_field
@@ -122,7 +122,7 @@ module.exports = function (Socialuser) {
             })
     }
     /**
-     * 
+     *
      * get by username
      * @param {username} - user_id
      * @param {array} - array_field

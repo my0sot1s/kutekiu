@@ -58,26 +58,26 @@
     "public": false
   },
   "AccessToken": {
-    "dataSource": "mysqlNode",
+    "dataSource": "mysqlNodeLocal",
     "public": false
   },
   "ACL": {
-    "dataSource": "mysqlNode",
+    "dataSource": "db",
     "public": false
   },
   "RoleMapping": {
-    "dataSource": "mysqlNode",
+    "dataSource": "db",
     "public": false,
     "options": {
       "strictObjectIDCoercion": true
     }
   },
   "Role": {
-    "dataSource": "mysqlNode",
+    "dataSource": "db",
     "public": true
   },
   "UserInfo": {
-    "dataSource": "mysqlNode",
+    "dataSource": "mysqlNodeLocal",
     "public": true
   },
   "EmailService": {
