@@ -1,0 +1,53 @@
+{
+    "name": "AccessToken",
+    "base": "Model",
+    "idInjection": true,
+    "options": {
+        "validateUpsert": true,
+        "mongodb": {
+            "collection": "AccessToken"
+        }
+    },
+    "properties": {
+        "id": {
+            "type": "string",
+            "id": true
+        },
+        "ttl": {
+            "type": "number",
+            "ttl": true,
+            "default": 1209600,
+            "description": "time to live in seconds (2 weeks by default)"
+        },
+        "scopes": {
+            "type": [
+                "string"
+            ],
+            "description": "Array of scopes granted to this access token."
+        },
+        "created": {
+            "type": "Date",
+            "defaultFn": "now"
+        }
+    },
+    "relations": {
+        "user": {
+            "type": "belongsTo",
+            "model": "UserInfo",
+            "foreignKey": "userId"
+        }
+    },
+    "acls": [
+        {
+            "principalType": "ROLE",
+            "principalId": "$everyone",
+            "permission": "DENY"
+        },
+        {
+            "principalType": "ROLE",
+            "principalId": "$everyone",
+            "property": "create",
+            "permission": "ALLOW"
+        }
+    ]
+}

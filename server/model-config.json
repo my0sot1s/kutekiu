@@ -58,7 +58,7 @@
     "public": false
   },
   "AccessToken": {
-    "dataSource": "mysqlNodeLocal",
+    "dataSource": "social",
     "public": false
   },
   "ACL": {
@@ -77,7 +77,7 @@
     "public": true
   },
   "UserInfo": {
-    "dataSource": "mysqlNodeLocal",
+    "dataSource": "social",
     "public": true
   },
   "EmailService": {

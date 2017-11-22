@@ -148,12 +148,12 @@ module.exports = function (Socialalbums) {
                 cb(null, cst.FAILURE_CODE, cst.POST_FAILURE, err);
             })
     }
-    Socialalbums.getListAlbumByUser = function (user_id) {
+    Socialalbums.getListAlbumByUser = function (user_id,cb) {
         Socialalbums.find({
             where: {
                 author: user_id
             },
-            fields: ["album_name", "album_description", "created"]
+            fields: ["id","album_name", "album_description", "created"]
         })
             .then(log => {
                 cb(null, cst.SUCCESS_CODE, cst.POST_SUCCESS, log);

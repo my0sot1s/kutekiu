@@ -36,16 +36,6 @@
     "connector": "mongodb",
     "allowExtendedOperators": true
   },
-  "mysqlNodeLocal": {
-    "host": "localhost",
-    "port": 3306,
-    "url": "mysql://root:95manhte@localhost:3306/mynode",
-    "database": "mynode",
-    "password": "95manhte",
-    "name": "mysqlNodeLocal",
-    "user": "teng",
-    "connector": "mysql"
-  },
   "EmailDataSource": {
     "name": "EmailDataSource",
     "connector": "mail",
