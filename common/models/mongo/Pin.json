@@ -1,0 +1,35 @@
+{
+    "name": "Pin",
+    "plural": "Pin",
+    "base": "Model",
+    "idInjection": true,
+    "options": {
+        "validateUpsert": true,
+        "mongodb": {
+            "collection": "Pin"
+        }
+    },
+    "properties": {
+        "title": {
+            "type": "string"
+        },
+        "content": {
+            "type": "string"
+        },
+        "created": {
+            "type": "string"
+        },
+        "X": {
+            "type": "number",
+            "default": 400
+        },
+        "Y": {
+            "type": "number",
+            "default": 100
+        }
+    },
+    "validations": [],
+    "relations": {},
+    "acls": [],
+    "methods": {}
+}

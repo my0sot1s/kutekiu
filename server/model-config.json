@@ -1,139 +1,143 @@
 {
-  "_meta": {
-    "sources": [
-      "loopback/common/models",
-      "loopback/server/models",
-      "../common/models",
-      "./models",
-      "../common/models/mongo",
-      "./models/mongo",
-      "../common/models/socials",
-      "./models/socials",
-      "../common/models/servermail",
-      "./models/servermail",
-      "../common/models/logs",
-      "./models/logs",
-      "../common/models/upload",
-      "./models/upload",
-      "../common/models/user",
-      "./models/user"
-    ],
-    "mixins": [
-      "loopback/common/mixins",
-      "loopback/server/mixins",
-      "../common/mixins",
-      "./mixins"
-    ]
-  },
-  "User": {
-    "dataSource": "db",
-    "public": false
-  },
-  "Music": {
-    "dataSource": "mongo_base",
-    "public": true
-  },
-  "Notes": {
-    "dataSource": "mongo_base",
-    "public": false
-  },
-  "Blog": {
-    "dataSource": "mongo_base",
-    "public": true
-  },
-  "Center": {
-    "dataSource": "mongo_base",
-    "public": false
-  },
-  "Foods": {
-    "dataSource": "mongo_base",
-    "public": false
-  },
-  "Stories": {
-    "dataSource": "mongo_base",
-    "public": false
-  },
-  "StoriesContent": {
-    "dataSource": "mongo_base",
-    "public": false
-  },
-  "AccessToken": {
-    "dataSource": "social",
-    "public": false
-  },
-  "ACL": {
-    "dataSource": "db",
-    "public": false
-  },
-  "RoleMapping": {
-    "dataSource": "db",
-    "public": false,
-    "options": {
-      "strictObjectIDCoercion": true
+    "_meta": {
+        "sources": [
+            "loopback/common/models",
+            "loopback/server/models",
+            "../common/models",
+            "./models",
+            "../common/models/mongo",
+            "./models/mongo",
+            "../common/models/socials",
+            "./models/socials",
+            "../common/models/servermail",
+            "./models/servermail",
+            "../common/models/logs",
+            "./models/logs",
+            "../common/models/upload",
+            "./models/upload",
+            "../common/models/user",
+            "./models/user"
+        ],
+        "mixins": [
+            "loopback/common/mixins",
+            "loopback/server/mixins",
+            "../common/mixins",
+            "./mixins"
+        ]
+    },
+    "User": {
+        "dataSource": "db",
+        "public": false
+    },
+    "Music": {
+        "dataSource": "mongo_base",
+        "public": true
+    },
+    "Notes": {
+        "dataSource": "mongo_base",
+        "public": false
+    },
+    "Blog": {
+        "dataSource": "mongo_base",
+        "public": true
+    },
+    "Pin": {
+        "dataSource": "mongo_base",
+        "public": true
+    },
+    "Center": {
+        "dataSource": "mongo_base",
+        "public": false
+    },
+    "Foods": {
+        "dataSource": "mongo_base",
+        "public": false
+    },
+    "Stories": {
+        "dataSource": "mongo_base",
+        "public": false
+    },
+    "StoriesContent": {
+        "dataSource": "mongo_base",
+        "public": false
+    },
+    "AccessToken": {
+        "dataSource": "social",
+        "public": false
+    },
+    "ACL": {
+        "dataSource": "db",
+        "public": false
+    },
+    "RoleMapping": {
+        "dataSource": "db",
+        "public": false,
+        "options": {
+            "strictObjectIDCoercion": true
+        }
+    },
+    "Role": {
+        "dataSource": "db",
+        "public": true
+    },
+    "UserInfo": {
+        "dataSource": "social",
+        "public": true
+    },
+    "EmailService": {
+        "dataSource": "mongo_sys",
+        "public": true
+    },
+    "SystemLogs": {
+        "dataSource": "mongo_sys",
+        "public": false
+    },
+    "EmailRef": {
+        "dataSource": "EmailDataSource",
+        "public": false
+    },
+    "Upload": {
+        "dataSource": "mongo_sys",
+        "public": true
+    },
+    "BaseUpload": {
+        "dataSource": "storage",
+        "public": true
+    },
+    "Image": {
+        "dataSource": "mongo_base",
+        "public": true
+    },
+    "social_post": {
+        "dataSource": "social",
+        "public": true
+    },
+    "social_like": {
+        "dataSource": "social",
+        "public": true
+    },
+    "social_timeline": {
+        "dataSource": "social",
+        "public": true
+    },
+    "social_user": {
+        "dataSource": "social",
+        "public": true
+    },
+    "social_comments": {
+        "dataSource": "social",
+        "public": true
+    },
+    "social_follower": {
+        "dataSource": "social",
+        "public": true
+    },
+    "social_tags": {
+        "dataSource": "social",
+        "public": true
+    },
+    "social_albums": {
+        "dataSource": "social",
+        "public": true
     }
-  },
-  "Role": {
-    "dataSource": "db",
-    "public": true
-  },
-  "UserInfo": {
-    "dataSource": "social",
-    "public": true
-  },
-  "EmailService": {
-    "dataSource": "mongo_sys",
-    "public": true
-  },
-  "SystemLogs": {
-    "dataSource": "mongo_sys",
-    "public": false
-  },
-  "EmailRef": {
-    "dataSource": "EmailDataSource",
-    "public": false
-  },
-  "Upload": {
-    "dataSource": "mongo_sys",
-    "public": true
-  },
-  "BaseUpload": {
-    "dataSource": "storage",
-    "public": true
-  },
-  "Image": {
-    "dataSource": "mongo_base",
-    "public": true
-  },
-  "social_post": {
-    "dataSource": "social",
-    "public": true
-  },
-  "social_like": {
-    "dataSource": "social",
-    "public": true
-  },
-  "social_timeline": {
-    "dataSource": "social",
-    "public": true
-  },
-  "social_user": {
-    "dataSource": "social",
-    "public": true
-  },
-  "social_comments": {
-    "dataSource": "social",
-    "public": true
-  },
-  "social_follower": {
-    "dataSource": "social",
-    "public": true
-  },
-  "social_tags": {
-    "dataSource": "social",
-    "public": true
-  },
-  "social_albums": {
-    "dataSource": "social",
-    "public": true
-  }
 }
