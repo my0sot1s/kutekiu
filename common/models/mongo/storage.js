@@ -76,6 +76,50 @@ function uploadWithHttpUrl(url, folder, tags) {
 
 module.exports = function (Storage) {
 
+    Storage.getAll = function (limit = 5, page = 1, cb) {
+        Storage.find({
+                order: "created DESC",
+                skip: limit * (page - 1),
+                limit
+            })
+            .then(docs=>{
+                cb(null, cst.SUCCESS_CODE, cst.GET_SUCCESS, docs);
+            })
+            .catch(err=>{
+                cb(null, cst.FAILURE_CODE, cst.GET_FAILURE, err);
+            })
+    }
+    Storage.remoteMethod(
+        "getAll", {
+            http: { path: "/getAll", verb: "GET" },
+            accepts: [
+                { arg: "limit", type: "number", default: 5 },
+                { arg: "page", type: "number", default: 1 },
+            ],
+            returns: [
+                { arg: "status", type: "number" },
+                { arg: "message", type: "string" },
+                { arg: "data", type: "array" },
+            ]
+        });
+    Storage.getById = function (id ,cb) {
+        Storage.findById(id, {}, function (err, doc) {
+            if (err) cb(null, cst.FAILURE_CODE, cst.GET_FAILURE, cst.NULL_OBJECT);
+            cb(null, cst.SUCCESS_CODE, cst.GET_SUCCESS, doc);
+        });
+    }
+    Storage.remoteMethod(
+        "getById", {
+            http: { path: "/getById", verb: "GET" },
+            accepts: [
+                { arg: "id", type: "string", required: true },
+            ],
+            returns: [
+                { arg: "status", type: "number" },
+                { arg: "message", type: "string" },
+                { arg: "data", type: "object" },
+            ]
+        });
     /**
      * upload
      */
@@ -165,7 +209,7 @@ module.exports = function (Storage) {
     })
 
     Storage.uploadWithUrl = function (url, cb) {
-        uploadWithHttpUrl(url,'common')
+        uploadWithHttpUrl(url, 'common')
             .then(media => {
                 return Storage.create({
                     created: Date.now(),
