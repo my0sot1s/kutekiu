@@ -1,0 +1,24 @@
+{
+  "name": "Storage",
+  "plural": "storage",
+  "base": "Model",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true,
+      "mongodb":{
+          "collection":"StorageMedia"
+      }
+  },
+  "properties": {
+      "media":{
+          "type":"array"
+      },
+      "created":{
+          "type":"date"
+      }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}
