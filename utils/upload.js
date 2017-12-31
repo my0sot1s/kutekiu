@@ -1,8 +1,8 @@
 // import { Buffer } from "buffer";
 
 /**
- * 
- * 
+ *
+ *
  * @author te.ng - <manhte231>
  *  * @prop unused
  * create upload
@@ -11,23 +11,28 @@
 const Promise = require("bluebird");
 const Buffer = require('buffer').Buffer;
 const cloudinary = require("cloudinary");
-cloudinary.config({
-    cloud_name: process.env.CLOUDINARY_NAME,
-    api_key: process.env.CLOUDINARY_API_KEY,
-    api_secret: process.env.CLOUDINARY_API_SECRET
-});
+
+
+const runConfig = () => {
+    cloudinary.config({
+        cloud_name: process.env.CLOUDINARY_NAME,
+        api_key: process.env.CLOUDINARY_API_KEY,
+        api_secret: process.env.CLOUDINARY_API_SECRET
+    });
+}
 const getUserAlbum = require("./authentication").getUserAlbum;
 
 /**
  * upload single file
- * 
- * 
+ *
+ *
  * @prop unused
- * @param {*} req 
- * @param {*} res 
- * @param {*} next 
+ * @param {*} req
+ * @param {*} res
+ * @param {*} next
  */
 function middlewareUpload(req, res, next) {
+    runConfig()
     cloudinary.v2.uploader.upload_stream((err, result) => {
         if (err) next(err, null)
         else next(null, result);
@@ -35,9 +40,10 @@ function middlewareUpload(req, res, next) {
 }
 /**
  * upload using buffer
- * @param {Buffer} buffer 
+ * @param {Buffer} buffer
  */
 function middleUploader(buffer) {
+    runConfig()
     return new Promise(function (resolve, reject) {
         cloudinary.v2.uploader.upload_stream((err, result) => {
             if (err) reject(err)
@@ -47,10 +53,11 @@ function middleUploader(buffer) {
 }
 /**
  * upload using buffer
- * 
- * @param {string} public_id 
+ *
+ * @param {string} public_id
  */
 function middleUploadDestroy(public_id) {
+    runConfig()
     return new Promise(function (resolve, reject) {
         cloudinary.v2.uploader.destroy(public_id,
             function (error, result) {
@@ -60,6 +67,7 @@ function middleUploadDestroy(public_id) {
     })
 }
 function uploadWithHttpUrl(url, folder, tags) {
+    runConfig()
     return new Promise(function (resolve, reject) {
         cloudinary.v2.uploader.upload(url,
             {
@@ -74,28 +82,30 @@ function uploadWithHttpUrl(url, folder, tags) {
 }
 /**
  * upload using buffer
- * @param {File} file 
+ * @param {File} file
  */
 function middleUploaderBas64FromBuffer(file, folder, tags) {
+    runConfig()
     let base64 =
         file.buffer.toString("base64")
         , base64Header = `data:${file.mimetype};base64,`;
     return new Promise(function (resolve, reject) {
         cloudinary.v2.uploader
             .upload(`${base64Header}${base64}`,
-            {
-                folder: `${folder}`,
-                tags: tags ? tags : []
-            },
-            (err, result) => {
-                if (err) reject(err)
-                else resolve(result)
-            })
+                {
+                    folder: `${folder}`,
+                    tags: tags ? tags : []
+                },
+                (err, result) => {
+                    if (err) reject(err)
+                    else resolve(result)
+                })
     })
 }
 
 
 function uploadToUserAlbum(files, user_id, folder, tags) {
+    runConfig()
     if (!folder || folder === "" || folder === 'common') folder = 'common';
     return getUserAlbum(user_id)
         .then(album_name => {
@@ -133,5 +143,5 @@ module.exports = {
     middleUploadDestroy,
     uploadWithHttpUrl,
     middleUploaderBas64FromBuffer,
-    uploadToUserAlbum
+    uploadToUserAlbum,
 }

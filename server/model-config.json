@@ -45,6 +45,10 @@
         "dataSource": "mongo_base",
         "public": true
     },
+    "Storage": {
+        "dataSource": "mongo_base",
+        "public": true
+    },
     "Center": {
         "dataSource": "mongo_base",
         "public": false

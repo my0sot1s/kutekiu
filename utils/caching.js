@@ -1,26 +1,28 @@
+const CONFIG = {
+    host: `redis-16703.c10.us-east-1-2.ec2.cloud.redislabs.com`,
+    port: 16703,
+    url: `redis://:95manhte@redis-16703.c10.us-east-1-2.ec2.cloud.redislabs.com:16703/redis-node`,
+    db: 'redis-node'
+}
+
 var redis = require("redis"),
-    client = redis.createClient({
-        host:`redis-16703.c10.us-east-1-2.ec2.cloud.redislabs.com`,
-        port:16703,
-        url:`redis://:95manhte@redis-16703.c10.us-east-1-2.ec2.cloud.redislabs.com:16703/redis-node`,
-        db:'redis-node'
-    });
+    client = redis.createClient(CONFIG);
 // ttl=10 mins
-const TTL=10*60;
-const Promise=require("bluebird");
-const _ =require("lodash");
+const TTL = 10 * 60;
+const Promise = require("bluebird");
+const _ = require("lodash");
 Promise.promisifyAll(redis.RedisClient.prototype);
 
 /**
  *
  * @param {[{id:string}]} arra
  */
-const hookArrayToObject=(arra)=>{
-    if(!Array.isArray(arra))return;
-    else{
-        let listData=[];
-        arra.map(val=>{
-            listData.push(_.keys(val)[0],_.values(val)[0])
+const hookArrayToObject = (arra) => {
+    if (!Array.isArray(arra))return;
+    else {
+        let listData = [];
+        arra.map(val => {
+            listData.push(_.keys(val)[0], _.values(val)[0])
         });
         return listData;
     }
@@ -32,11 +34,11 @@ client.on("error", function (err) {
     console.log("Error " + err);
 });
 
-client.on("connect",function(connect){
-    console.log("Connected:",connect);
+client.on("connect", function () {
+    console.log("Connected: SuccessFull", `${CONFIG.db}`);
 })
-client.on("ready",function(log){
-    console.log("Ready caching!");
+client.on("ready", function (log) {
+    console.log("@@@ Ready caching! @@@");
 })
 /**
  *
@@ -46,17 +48,17 @@ client.on("ready",function(log){
  * @param ttl
  * @returns {Promise.<TResult>}
  */
-const createHmset=(hash_key,mang,ttl)=>{
-    if(!ttl) ttl=TTL;
-    let query=[hash_key];
-    for(let key in mang){
-        query.push(key,mang[key]);
+const createHmset = (hash_key, mang, ttl) => {
+    if (!ttl) ttl = TTL;
+    let query = [hash_key];
+    for (let key in mang) {
+        query.push(key, mang[key]);
     }
-    return client.hmsetAsync(...query).then(
-        ()=>{
-            return client.expireAsync(hash_key,ttl)
-        }
-    );
+    return client.hmsetAsync(...query)
+        .then(() => {
+                return client.expireAsync(hash_key, ttl)
+            }
+        );
 }
 
 
@@ -67,17 +69,18 @@ const createHmset=(hash_key,mang,ttl)=>{
  * @param val
  * @returns {Promise.<TResult>}
  */
- const addMore=(hash_key,key,val)=>{
-    return client.hsetAsync(hash_key,key,val).then(()=>{
-        return client.expireAsync(hash_key,TTL)
-    });
+const addMore = (hash_key, key, val) => {
+    return client.hsetAsync(hash_key, key, val)
+        .then(() => {
+            return client.expireAsync(hash_key, TTL)
+        });
 }
 /**
  *
  * @param hash_key
  * @returns {*}
  */
- const getAll=(hash_key)=>{
+const getAll = (hash_key) => {
     return client.hgetallAsync(hash_key)
 }
 /**
@@ -85,7 +88,7 @@ const createHmset=(hash_key,mang,ttl)=>{
  * @param hash_key
  * @returns {*}
  */
-const getHkeys =(hash_key)=>{
+const getHkeys = (hash_key) => {
     return client.hkeysAsync(hash_key)
 }
 
@@ -95,10 +98,10 @@ const getHkeys =(hash_key)=>{
 //     }
 // );
 // addMore(`prod_key`,"post3",3333);
-getAll(`prod_key`).then(doc=>{
-    console.log(doc);
-})
-module.exports={
+// getAll(`prod_key`).then(doc=>{
+//     console.log(doc);
+// })
+module.exports = {
     getHkeys,
     getAll,
     addMore,
