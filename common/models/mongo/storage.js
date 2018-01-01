@@ -9,7 +9,7 @@ const cst = require("../../../utils/constants")
 const multer = require("multer");
 const storage = multer.memoryStorage();
 const Promise = require("bluebird")
-const upload = multer({storage, limits: "50mb"});
+const upload = multer({ storage, limits: "50mb" });
 const MAX_COUNT = 10;
 const multerArray = upload.array("file", MAX_COUNT);
 const Buffer = require('buffer').Buffer;
@@ -35,14 +35,14 @@ function middleUploaderBas64FromBuffer(file, folder, tags) {
     return new Promise(function (resolve, reject) {
         cloudinary.v2.uploader
             .upload(`${base64Header}${base64}`,
-                {
-                    folder: `${folder}`,
-                    tags: tags ? tags : []
-                },
-                (err, result) => {
-                    if (err) reject(err)
-                    else resolve(result)
-                })
+            {
+                folder: `${folder}`,
+                tags: tags ? tags : []
+            },
+            (err, result) => {
+                if (err) reject(err)
+                else resolve(result)
+            })
     })
 }
 /**
@@ -78,14 +78,14 @@ module.exports = function (Storage) {
 
     Storage.getAll = function (limit = 5, page = 1, cb) {
         Storage.find({
-                order: "created DESC",
-                skip: limit * (page - 1),
-                limit
-            })
-            .then(docs=>{
+            order: "created DESC",
+            skip: limit * (page - 1),
+            limit
+        })
+            .then(docs => {
                 cb(null, cst.SUCCESS_CODE, cst.GET_SUCCESS, docs);
             })
-            .catch(err=>{
+            .catch(err => {
                 cb(null, cst.FAILURE_CODE, cst.GET_FAILURE, err);
             })
     }
@@ -102,7 +102,7 @@ module.exports = function (Storage) {
                 { arg: "data", type: "array" },
             ]
         });
-    Storage.getById = function (id ,cb) {
+    Storage.getById = function (id, cb) {
         Storage.findById(id, {}, function (err, doc) {
             if (err) cb(null, cst.FAILURE_CODE, cst.GET_FAILURE, cst.NULL_OBJECT);
             cb(null, cst.SUCCESS_CODE, cst.GET_SUCCESS, doc);
@@ -129,45 +129,58 @@ module.exports = function (Storage) {
     })
 
     Storage.upload = function (req, res, cb) {
+        var size = 0
         /**
          * @param {array} log
          */
         Promise.map(req.files, (file, index) => {
-            return middleUploaderBas64FromBuffer(file, `common`)
-                .then(media => {
-                    return {
-                        public_id: media.public_id,
-                        size: media.bytes,
-                        format: media.format,
-                        url: media.url
-                    }
-                })
+            size += file.size
         })
-            .then(media => {
-                return Storage.create({
-                    created: Date.now(),
-                    media
-                }).then(doc => {
-                    cb(null, 200, `Upload success`, doc)
-                }).catch(err => {
-                    cb(null, 400, `Upload false`, err)
+            .then(() => {
+                if (size > 5000000) throw new Error(`Big size`)
+                else return req.files
+            })
+            .then(files => {
+                return Promise.map(files, (file, index) => {
+                    return middleUploaderBas64FromBuffer(file, `common`)
+                        .then(media => {
+                            return {
+                                public_id: media.public_id,
+                                size: media.bytes,
+                                format: media.format,
+                                url: media.url
+                            }
+                        })
                 })
+                    .then(media => {
+                        return Storage.create({
+                            created: Date.now(),
+                            media
+                        }).then(doc => {
+                            cb(null, 200, `Upload success`, doc)
+                        }).catch(err => {
+                            cb(null, 400, `Cannot save to db`, err)
+                        })
+                    })
+                    .catch(err => {
+                        cb(null, 400, `Can not connect and save to storage`, err)
+                    })
             })
             .catch(err => {
-                cb(null, 400, `Upload false`, err)
+                cb(null, 400, `Fail for extention or big size`, err)
             })
     }
     Storage.remoteMethod("upload", {
-        http: {path: "/upload", verb: "POST"},
+        http: { path: "/upload", verb: "POST" },
         description: "Sử dụng qua post man",
         accepts: [
-            {arg: 'req', type: 'object', 'http': {source: 'req'}},
-            {arg: 'res', type: 'object', 'http': {source: 'res'}}
+            { arg: 'req', type: 'object', 'http': { source: 'req' } },
+            { arg: 'res', type: 'object', 'http': { source: 'res' } }
         ],
         returns: [
-            {arg: "status", type: "number"},
-            {arg: "message", type: "string"},
-            {arg: "data", type: "object"}
+            { arg: "status", type: "number" },
+            { arg: "message", type: "string" },
+            { arg: "data", type: "object" }
         ]
     })
 
@@ -189,22 +202,22 @@ module.exports = function (Storage) {
             })
             .then(log => {
                 // xóa post
-                cb(null, cst.SUCCESS_CODE, cst.POST_SUCCESS, {id});
+                cb(null, cst.SUCCESS_CODE, cst.POST_SUCCESS, { id });
             })
             .catch(function (err) {
                 cb(null, cst.FAILURE_CODE, cst.POST_FAILURE, err);
             });
     }
     Storage.remoteMethod("delete", {
-        http: {path: "/delete", verb: "DELETE"},
+        http: { path: "/delete", verb: "DELETE" },
         description: "Sử dụng qua post man",
         accepts: [
-            {arg: "id", type: "string", required: true},
+            { arg: "id", type: "string", required: true },
         ],
         returns: [
-            {arg: "status", type: "number"},
-            {arg: "message", type: "string"},
-            {arg: "data", type: "object"}
+            { arg: "status", type: "number" },
+            { arg: "message", type: "string" },
+            { arg: "data", type: "object" }
         ]
     })
 
@@ -229,14 +242,14 @@ module.exports = function (Storage) {
             })
     }
     Storage.remoteMethod("uploadWithUrl", {
-        http: {path: "/uploadWithUrl", verb: "POST"},
+        http: { path: "/uploadWithUrl", verb: "POST" },
         accepts: [
-            {arg: 'url', type: 'string', required: true}
+            { arg: 'url', type: 'string', required: true }
         ],
         returns: [
-            {arg: "status", type: "number"},
-            {arg: "message", type: "string"},
-            {arg: "data", type: "object"}
+            { arg: "status", type: "number" },
+            { arg: "message", type: "string" },
+            { arg: "data", type: "object" }
         ]
     })
 
