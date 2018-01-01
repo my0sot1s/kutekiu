@@ -9,7 +9,7 @@ const cst = require("../../../utils/constants")
 const multer = require("multer");
 const storage = multer.memoryStorage();
 const Promise = require("bluebird")
-const upload = multer({ storage, limits: "50mb" });
+const upload = multer({storage, limits: "50mb"});
 const MAX_COUNT = 10;
 const multerArray = upload.array("file", MAX_COUNT);
 const Buffer = require('buffer').Buffer;
@@ -35,14 +35,33 @@ function middleUploaderBas64FromBuffer(file, folder, tags) {
     return new Promise(function (resolve, reject) {
         cloudinary.v2.uploader
             .upload(`${base64Header}${base64}`,
-            {
-                folder: `${folder}`,
-                tags: tags ? tags : []
-            },
-            (err, result) => {
-                if (err) reject(err)
-                else resolve(result)
-            })
+                {
+                    folder: `${folder}`,
+                    tags: tags ? tags : []
+                },
+                (err, result) => {
+                    if (err) reject(err)
+                    else resolve(result)
+                })
+    })
+}
+const videoUpload = function (file, folder = `video`, tags) {
+    runConfig()
+    let base64 =
+        file.buffer.toString("base64")
+        , base64Header = `data:${file.mimetype};base64,`;
+    return new Promise(function (resolve, reject) {
+        cloudinary.v2.uploader
+            .upload(`${base64Header}${base64}`,
+                {
+                    folder: `${folder}`,
+                    tags: tags ? tags : [],
+                    resource_type: "video"
+                },
+                (err, result) => {
+                    if (err) reject(err)
+                    else resolve(result)
+                })
     })
 }
 /**
@@ -91,15 +110,15 @@ module.exports = function (Storage) {
     }
     Storage.remoteMethod(
         "getAll", {
-            http: { path: "/getAll", verb: "GET" },
+            http: {path: "/getAll", verb: "GET"},
             accepts: [
-                { arg: "limit", type: "number", default: 5 },
-                { arg: "page", type: "number", default: 1 },
+                {arg: "limit", type: "number", default: 5},
+                {arg: "page", type: "number", default: 1},
             ],
             returns: [
-                { arg: "status", type: "number" },
-                { arg: "message", type: "string" },
-                { arg: "data", type: "array" },
+                {arg: "status", type: "number"},
+                {arg: "message", type: "string"},
+                {arg: "data", type: "array"},
             ]
         });
     Storage.getById = function (id, cb) {
@@ -110,14 +129,14 @@ module.exports = function (Storage) {
     }
     Storage.remoteMethod(
         "getById", {
-            http: { path: "/getById", verb: "GET" },
+            http: {path: "/getById", verb: "GET"},
             accepts: [
-                { arg: "id", type: "string", required: true },
+                {arg: "id", type: "string", required: true},
             ],
             returns: [
-                { arg: "status", type: "number" },
-                { arg: "message", type: "string" },
-                { arg: "data", type: "object" },
+                {arg: "status", type: "number"},
+                {arg: "message", type: "string"},
+                {arg: "data", type: "object"},
             ]
         });
     /**
@@ -171,20 +190,64 @@ module.exports = function (Storage) {
             })
     }
     Storage.remoteMethod("upload", {
-        http: { path: "/upload", verb: "POST" },
+        http: {path: "/upload", verb: "POST"},
         description: "Sử dụng qua post man",
         accepts: [
-            { arg: 'req', type: 'object', 'http': { source: 'req' } },
-            { arg: 'res', type: 'object', 'http': { source: 'res' } }
+            {arg: 'req', type: 'object', 'http': {source: 'req'}},
+            {arg: 'res', type: 'object', 'http': {source: 'res'}}
         ],
         returns: [
-            { arg: "status", type: "number" },
-            { arg: "message", type: "string" },
-            { arg: "data", type: "object" }
+            {arg: "status", type: "number"},
+            {arg: "message", type: "string"},
+            {arg: "data", type: "object"}
         ]
     })
-
-
+    Storage.beforeRemote("uploadVideo", function (ctx, any, next) {
+        // đẩy nội dung media vào req
+        multerArray(ctx.req, ctx.res, next)
+    })
+    Storage.uploadVideo = function (req, res, cb) {
+        var size = 0
+        /**
+         * @param {array} log
+         */
+        if (req.files[0].size > 7000000)throw new Error(`Big size`)
+        else {
+            videoUpload(req.files[0]).then(media => {
+                return {
+                    public_id: media.public_id,
+                    size: media.bytes,
+                    format: media.format,
+                    url: media.url
+                }
+            }).then(media => {
+                return Storage.create({
+                    created: Date.now(),
+                    media:[media]
+                }).then(doc => {
+                    cb(null, 200, `Upload success`, doc)
+                }).catch(err => {
+                    cb(null, 400, `Cannot save to db`, err)
+                })
+            })
+                .catch(err => {
+                    cb(null, 400, `Can not connect and save to storage`, err)
+                })
+        }
+    }
+    Storage.remoteMethod("uploadVideo", {
+        http: {path: "/upload-video", verb: "POST"},
+        description: "Sử dụng qua post man",
+        accepts: [
+            {arg: 'req', type: 'object', 'http': {source: 'req'}},
+            {arg: 'res', type: 'object', 'http': {source: 'res'}}
+        ],
+        returns: [
+            {arg: "status", type: "number"},
+            {arg: "message", type: "string"},
+            {arg: "data", type: "object"}
+        ]
+    })
     Storage.delete = function (id, cb) {
         // tìm post
         Storage.findById(id)
@@ -202,22 +265,22 @@ module.exports = function (Storage) {
             })
             .then(log => {
                 // xóa post
-                cb(null, cst.SUCCESS_CODE, cst.POST_SUCCESS, { id });
+                cb(null, cst.SUCCESS_CODE, cst.POST_SUCCESS, {id});
             })
             .catch(function (err) {
                 cb(null, cst.FAILURE_CODE, cst.POST_FAILURE, err);
             });
     }
     Storage.remoteMethod("delete", {
-        http: { path: "/delete", verb: "DELETE" },
+        http: {path: "/delete", verb: "DELETE"},
         description: "Sử dụng qua post man",
         accepts: [
-            { arg: "id", type: "string", required: true },
+            {arg: "id", type: "string", required: true},
         ],
         returns: [
-            { arg: "status", type: "number" },
-            { arg: "message", type: "string" },
-            { arg: "data", type: "object" }
+            {arg: "status", type: "number"},
+            {arg: "message", type: "string"},
+            {arg: "data", type: "object"}
         ]
     })
 
@@ -242,14 +305,14 @@ module.exports = function (Storage) {
             })
     }
     Storage.remoteMethod("uploadWithUrl", {
-        http: { path: "/uploadWithUrl", verb: "POST" },
+        http: {path: "/uploadWithUrl", verb: "POST"},
         accepts: [
-            { arg: 'url', type: 'string', required: true }
+            {arg: 'url', type: 'string', required: true}
         ],
         returns: [
-            { arg: "status", type: "number" },
-            { arg: "message", type: "string" },
-            { arg: "data", type: "object" }
+            {arg: "status", type: "number"},
+            {arg: "message", type: "string"},
+            {arg: "data", type: "object"}
         ]
     })
 

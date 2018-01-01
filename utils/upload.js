@@ -22,6 +22,7 @@ const runConfig = () => {
 }
 const getUserAlbum = require("./authentication").getUserAlbum;
 
+
 /**
  * upload single file
  *
@@ -137,6 +138,26 @@ function uploadToUserAlbum(files, user_id, folder, tags) {
 }
 // uploadWithHttpUrl(`https://cdn01.muaban.net/images/thumb-detail/201704/22/921/059ccac5991d4c50b2702202994b1875.jpg`,
 //     `test`);
+
+const videoUpload = function (file, folder = `video`, tags) {
+    runConfig()
+    let base64 =
+        file.buffer.toString("base64")
+        , base64Header = `data:${file.mimetype};base64,`;
+    return new Promise(function (resolve, reject) {
+        cloudinary.v2.uploader
+            .upload(`${base64Header}${base64}`,
+                {
+                    folder: `${folder}`,
+                    tags: tags ? tags : [],
+                    resource_type: "video"
+                },
+                (err, result) => {
+                    if (err) reject(err)
+                    else resolve(result)
+                })
+    })
+}
 module.exports = {
     middlewareUpload,
     middleUploader,
@@ -144,4 +165,5 @@ module.exports = {
     uploadWithHttpUrl,
     middleUploaderBas64FromBuffer,
     uploadToUserAlbum,
+    videoUpload
 }
