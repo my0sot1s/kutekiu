@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="main.css">
+</head>
+
+<body>
+<div id="app">
+    <div class="chat_container">
+        <div class="chat_wapper">
+            <div class="chat_header">
+                <p>Chat Widget</p>
+                <button v-on:click="">Room bots</button>
+                <button v-on:click="">Common</button>
+            </div>
+            <div id='chat_body'>
+                <p class="right">asdads</p>
+                <p class="left">At the core of Vue.js is a system that enables us to declaratively render data to the DOM using straightforward
+                    template syntax:</p>
+            </div>
+            <span class="txt_name">
+                    <input style="padding:6px;" type="text" placeholder="Send Message..." v-model="message" @keyup.enter='sendMessage' />
+                </span>
+            <button v-on:click="sendMessage" style="padding:6px;"> Send</button>
+        </div>
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+<script src="socket.io/socket.io.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script>
+    var app = new Vue({
+        el: '#app',
+        data: {
+            message: 'Hello Vue!',
+            chid: null,
+            socket: null,
+            message: null,
+            events_messages: {},
+            clientid: '',
+            rooms: ['common', 'bots'],
+            events_room: {
+                leave: 'cvs.room.leave',
+                join: 'cvs.room.join',
+                room: 'cvs.room.'
+            }
+
+        },
+        created: async function () {
+            this.clientid = this.makeid()
+            this.socket = await io({
+                transportOptions: {
+                    polling: {
+                        extraHeaders: {
+                            'x-clientid': this.clientid
+                        }
+                    }
+                }
+            })
+            await this.socket.on('connect', () => {
+                this.chid = this.socket.id
+                this.events_messages = {
+                    sent: `cvs.message.sent.${this.chid}`,
+                    received: `cvs.message.received.${this.chid}`
+                }
+                // for (var r of this.rooms) {
+                //     this.event.push(`cvs.room.${r}`)
+                // }
+                console.log('connect success', this.socket.id)
+                console.log('connect event', this.events_messages)
+            })
+
+        },
+        methods: {
+            sendMessage: function () {
+                this.socket.emit(this.events_messages.sent, { mes: this.message })
+                this.createEl('right', this.message)
+                this.message = ''
+            },
+            isValid: function (id) {
+                if (id.length === 20) return true
+            },
+            makeid: () => {
+                var text = "";
+                var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+                for (var i = 0; i < 40; i++)
+                    text += possible.charAt(Math.floor(Math.random() * possible.length));
+                return text
+            },
+            createEl: function (clName, txt) {
+                let el = document.createElement('P')
+                el.classList.add(clName)
+                el.innerHTML = txt
+                document.getElementById('chat_body').appendChild(el)
+                document.getElementById('chat_body').scrollTop = 0
+            }
+        },
+        watch: {
+            events_messages: function (ev) {
+                console.log('watch', ev)
+                // tien hanh join cac room
+                this.socket.emit(this.events_room.join, {
+                    rooms: this.rooms
+                })
+                // nghe message
+                for (var r of this.rooms) {
+                    this.socket.on(`${this.events_room.room}${r}`, (message) => {
+                        this.createEl('left', message.svb.mes)
+                    })
+                }
+            }
+        },
+        beforeDestroy: function () {
+            this.socket.emit(`${this.events_room.leave}`, {
+                rooms: this.rooms
+            })
+            this.socket.close()
+            this.socket = null
+        }
+    })
+</script>
+</body>
+
+</html>
