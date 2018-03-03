@@ -9,7 +9,7 @@ const cst = require("../../../utils/constants")
 const multer = require("multer");
 const storage = multer.memoryStorage();
 const Promise = require("bluebird")
-const upload = multer({storage, limits: "50mb"});
+const upload = multer({ storage, limits: "50mb" });
 const MAX_COUNT = 10;
 const multerArray = upload.array("file", MAX_COUNT);
 const Buffer = require('buffer').Buffer;
@@ -110,15 +110,15 @@ module.exports = function (Storage) {
     }
     Storage.remoteMethod(
         "getAll", {
-            http: {path: "/getAll", verb: "GET"},
+            http: { path: "/getAll", verb: "GET" },
             accepts: [
-                {arg: "limit", type: "number", default: 5},
-                {arg: "page", type: "number", default: 1},
+                { arg: "limit", type: "number", default: 5 },
+                { arg: "page", type: "number", default: 1 },
             ],
             returns: [
-                {arg: "status", type: "number"},
-                {arg: "message", type: "string"},
-                {arg: "data", type: "array"},
+                { arg: "status", type: "number" },
+                { arg: "message", type: "string" },
+                { arg: "data", type: "array" },
             ]
         });
     Storage.getById = function (id, cb) {
@@ -129,14 +129,14 @@ module.exports = function (Storage) {
     }
     Storage.remoteMethod(
         "getById", {
-            http: {path: "/getById", verb: "GET"},
+            http: { path: "/getById", verb: "GET" },
             accepts: [
-                {arg: "id", type: "string", required: true},
+                { arg: "id", type: "string", required: true },
             ],
             returns: [
-                {arg: "status", type: "number"},
-                {arg: "message", type: "string"},
-                {arg: "data", type: "object"},
+                { arg: "status", type: "number" },
+                { arg: "message", type: "string" },
+                { arg: "data", type: "object" },
             ]
         });
     /**
@@ -190,16 +190,16 @@ module.exports = function (Storage) {
             })
     }
     Storage.remoteMethod("upload", {
-        http: {path: "/upload", verb: "POST"},
+        http: { path: "/upload", verb: "POST" },
         description: "Sử dụng qua post man",
         accepts: [
-            {arg: 'req', type: 'object', 'http': {source: 'req'}},
-            {arg: 'res', type: 'object', 'http': {source: 'res'}}
+            { arg: 'req', type: 'object', 'http': { source: 'req' } },
+            { arg: 'res', type: 'object', 'http': { source: 'res' } }
         ],
         returns: [
-            {arg: "status", type: "number"},
-            {arg: "message", type: "string"},
-            {arg: "data", type: "object"}
+            { arg: "status", type: "number" },
+            { arg: "message", type: "string" },
+            { arg: "data", type: "object" }
         ]
     })
     Storage.beforeRemote("uploadVideo", function (ctx, any, next) {
@@ -211,7 +211,7 @@ module.exports = function (Storage) {
         /**
          * @param {array} log
          */
-        if (req.files[0].size > 7000000)throw new Error(`Big size`)
+        if (req.files[0].size > 7000000) throw new Error(`Big size`)
         else {
             videoUpload(req.files[0]).then(media => {
                 return {
@@ -223,7 +223,7 @@ module.exports = function (Storage) {
             }).then(media => {
                 return Storage.create({
                     created: Date.now(),
-                    media:[media]
+                    media: [media]
                 }).then(doc => {
                     cb(null, 200, `Upload success`, doc)
                 }).catch(err => {
@@ -236,16 +236,16 @@ module.exports = function (Storage) {
         }
     }
     Storage.remoteMethod("uploadVideo", {
-        http: {path: "/upload-video", verb: "POST"},
+        http: { path: "/upload-video", verb: "POST" },
         description: "Sử dụng qua post man",
         accepts: [
-            {arg: 'req', type: 'object', 'http': {source: 'req'}},
-            {arg: 'res', type: 'object', 'http': {source: 'res'}}
+            { arg: 'req', type: 'object', 'http': { source: 'req' } },
+            { arg: 'res', type: 'object', 'http': { source: 'res' } }
         ],
         returns: [
-            {arg: "status", type: "number"},
-            {arg: "message", type: "string"},
-            {arg: "data", type: "object"}
+            { arg: "status", type: "number" },
+            { arg: "message", type: "string" },
+            { arg: "data", type: "object" }
         ]
     })
     Storage.delete = function (id, cb) {
@@ -265,22 +265,22 @@ module.exports = function (Storage) {
             })
             .then(log => {
                 // xóa post
-                cb(null, cst.SUCCESS_CODE, cst.POST_SUCCESS, {id});
+                cb(null, cst.SUCCESS_CODE, cst.POST_SUCCESS, { id });
             })
             .catch(function (err) {
                 cb(null, cst.FAILURE_CODE, cst.POST_FAILURE, err);
             });
     }
     Storage.remoteMethod("delete", {
-        http: {path: "/delete", verb: "DELETE"},
+        http: { path: "/delete", verb: "DELETE" },
         description: "Sử dụng qua post man",
         accepts: [
-            {arg: "id", type: "string", required: true},
+            { arg: "id", type: "string", required: true },
         ],
         returns: [
-            {arg: "status", type: "number"},
-            {arg: "message", type: "string"},
-            {arg: "data", type: "object"}
+            { arg: "status", type: "number" },
+            { arg: "message", type: "string" },
+            { arg: "data", type: "object" }
         ]
     })
 
@@ -305,14 +305,14 @@ module.exports = function (Storage) {
             })
     }
     Storage.remoteMethod("uploadWithUrl", {
-        http: {path: "/uploadWithUrl", verb: "POST"},
+        http: { path: "/uploadWithUrl", verb: "POST" },
         accepts: [
-            {arg: 'url', type: 'string', required: true}
+            { arg: 'url', type: 'string', required: true }
         ],
         returns: [
-            {arg: "status", type: "number"},
-            {arg: "message", type: "string"},
-            {arg: "data", type: "object"}
+            { arg: "status", type: "number" },
+            { arg: "message", type: "string" },
+            { arg: "data", type: "object" }
         ]
     })
 
