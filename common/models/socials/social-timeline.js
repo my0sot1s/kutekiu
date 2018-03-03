@@ -180,21 +180,7 @@ module.exports = function (Socialtimeline) {
                     })
                   })
               })
-
-
           })
-          // .then(post => {
-          //     // return netw.listenAsync(cst.PREFIX_DESTINATIONS_QUEUE + 'get2Comment').then(c => {
-          //     //     return Promise.map(post, (value, index) => {
-          //     //         return { ...value, ...c[index] }
-          //     //     })
-          //     // })
-          //     return netw.listenAsync(cst.PREFIX_DESTINATIONS_QUEUE + 'get2Comment').then(c => {
-          //         return Promise.map(post, (value, index) => {
-          //             return { ...value, ...c[index] }
-          //         })
-          //     })
-          // })
           .then(doc => {
             return Promise.map(doc, p => {
               return app.models.social_comments
@@ -213,27 +199,6 @@ module.exports = function (Socialtimeline) {
             // .then(ret => { })
             // .then()
           })
-        // .then(doc => {
-        //     return Promise.map(doc, p => {
-        //         return app.models.social_like
-        //             .getPostLike(p.post.id.toString())
-        //             .then(log => {
-        //                 return { ...p, like: log }
-        //             })
-        //             .catch(err => {
-        //                 return err;
-        //             })
-        //     })
-        // })
-
-        // .then(result => {
-        //     console.info('--get from queue done!');
-        //     // chấm dứt nghe queue
-        //     cb(null, cst.SUCCESS_CODE, cst.GET_SUCCESS, result);
-        // })
-        // .catch(err => {
-        //     return cb(null, cst.FAILURE_CODE, cst.GET_FAILURE, err);
-        // })
       })
   }
   Socialtimeline.getTimeLine = function (user_id, date, limit, page, cb) {
