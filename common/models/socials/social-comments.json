@@ -6,7 +6,7 @@
   "options": {
     "validateUpsert": true,
     "mongodb": {
-      "collection": "socials_comments"
+      "collection": "social_comments"
     }
   },
   "properties": {
@@ -14,7 +14,7 @@
       "type": "object"
     },
     "user_id": {
-      "type": "number"
+      "type": "string"
     },
     "content": {
       "type": "string"

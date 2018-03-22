@@ -188,7 +188,7 @@ module.exports = function (Socialfollower) {
     http: { path: '/all-own', verb: 'get' },
     description: 'Lấy tất cả người bạn đang theo dõi',
     accepts: [
-      { arg: 'user_id', type: 'number', required: true },
+      { arg: 'user_id', type: 'string', required: true },
     ],
     returns: [
       { arg: 'status', type: 'number' },
@@ -201,7 +201,7 @@ module.exports = function (Socialfollower) {
     description: 'tiến hành theo dõi user_id follow own',
     accepts: [
       { arg: 'own', type: 'number', required: true },
-      { arg: 'user_id', type: 'number', required: true },
+      { arg: 'user_id', type: 'string', required: true },
     ],
     returns: [
       { arg: 'status', type: 'number' },

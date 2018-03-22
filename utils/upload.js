@@ -1,4 +1,4 @@
-// import { Buffer } from "buffer";
+// import { Buffer } from 'buffer';
 
 /**
  *
@@ -8,9 +8,9 @@
  * create upload
  */
 
-const Promise = require("bluebird");
+const Promise = require('bluebird');
 const Buffer = require('buffer').Buffer;
-const cloudinary = require("cloudinary");
+const cloudinary = require('cloudinary');
 
 
 const runConfig = () => {
@@ -20,7 +20,7 @@ const runConfig = () => {
         api_secret: process.env.CLOUDINARY_API_SECRET
     });
 }
-const getUserAlbum = require("./authentication").getUserAlbum;
+const getUserAlbum = require('./authentication').getUserAlbum;
 
 
 /**
@@ -88,7 +88,7 @@ function uploadWithHttpUrl(url, folder, tags) {
 function middleUploaderBas64FromBuffer(file, folder, tags) {
     runConfig()
     let base64 =
-        file.buffer.toString("base64")
+        file.buffer.toString('base64')
         , base64Header = `data:${file.mimetype};base64,`;
     return new Promise(function (resolve, reject) {
         cloudinary.v2.uploader
@@ -106,34 +106,30 @@ function middleUploaderBas64FromBuffer(file, folder, tags) {
 
 
 function uploadToUserAlbum(files, user_id, folder, tags) {
-    runConfig()
-    if (!folder || folder === "" || folder === 'common') folder = 'common';
-    return getUserAlbum(user_id)
-        .then(album_name => {
-            if (!album_name) return Promise.reject(`Cannot find root user album`);
-            else {
-                if (!files)
-                    return Promise.reject(`No media added ^_^`);
-                else {
-                    return Promise.map(files, (file, index) => {
-                        return middleUploaderBas64FromBuffer(file, `${album_name}/${folder}`, tags);
-                    }).then(fileArray => {
-                        return Promise.all(fileArray)
-                            .then(log => {
-                                return Promise.map(log, value => {
-                                    return {
-                                        public_id: value.public_id,
-                                        width: value.width,
-                                        height: value.height,
-                                        format: value.format,
-                                        bytes: value.bytes,
-                                        url: value.url,
-                                    }
-                                })
-                            })
-                    })
+    let album_name = `common`
+    return Promise.resolve()
+        .then(() => {
+            return Promise.map(files, (file, index) => {
+                return middleUploaderBas64FromBuffer(file, `${album_name}/${folder}`, tags);
+            })
+        })
+        .then(fileArray => {
+            return Promise.all(fileArray)
+                .then(log => {
+                    return log
+                })
+        })
+        .then(log => {
+            return Promise.map(log, value => {
+                return {
+                    public_id: value.public_id,
+                    width: value.width,
+                    height: value.height,
+                    format: value.format,
+                    bytes: value.bytes,
+                    url: value.url,
                 }
-            }
+            })
         })
 }
 // uploadWithHttpUrl(`https://cdn01.muaban.net/images/thumb-detail/201704/22/921/059ccac5991d4c50b2702202994b1875.jpg`,
@@ -142,7 +138,7 @@ function uploadToUserAlbum(files, user_id, folder, tags) {
 const videoUpload = function (file, folder = `video`, tags) {
     runConfig()
     let base64 =
-        file.buffer.toString("base64")
+        file.buffer.toString('base64')
         , base64Header = `data:${file.mimetype};base64,`;
     return new Promise(function (resolve, reject) {
         cloudinary.v2.uploader
@@ -150,7 +146,7 @@ const videoUpload = function (file, folder = `video`, tags) {
                 {
                     folder: `${folder}`,
                     tags: tags ? tags : [],
-                    resource_type: "video"
+                    resource_type: 'video'
                 },
                 (err, result) => {
                     if (err) reject(err)

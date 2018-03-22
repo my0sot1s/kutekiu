@@ -177,7 +177,7 @@ module.exports = function (Socialalbums) {
   Socialalbums.remoteMethod('getListAlbumByUser', {
     http: { path: '/get-list-albums', verb: 'GET' },
     accepts: [
-      { arg: 'user_id', type: 'number', required: true },
+      { arg: 'user_id', type: 'string', required: true },
     ],
     returns: [
       { arg: 'status', type: 'number' },
@@ -215,7 +215,7 @@ module.exports = function (Socialalbums) {
     http: { path: '/update-album-info', verb: 'POST' },
     description: 'Sử dụng qua post man',
     accepts: [
-      { arg: 'user_id', type: 'number', required: true },
+      { arg: 'user_id', type: 'string', required: true },
       { arg: 'id', type: 'string', required: true },
       { arg: 'album_name', type: 'string' },
       { arg: 'album_description', type: 'string' },
@@ -230,7 +230,7 @@ module.exports = function (Socialalbums) {
     http: { path: '/del-album', verb: 'DELETE' },
     description: 'Sử dụng qua post man',
     accepts: [
-      { arg: 'user_id', type: 'number', required: true },
+      { arg: 'user_id', type: 'string', required: true },
       { arg: 'id', type: 'string', required: true },
     ],
     returns: [

@@ -84,10 +84,6 @@
         "dataSource": "db",
         "public": true
     },
-    "UserInfo": {
-        "dataSource": "social",
-        "public": true
-    },
     "EmailService": {
         "dataSource": "mongo_sys",
         "public": true

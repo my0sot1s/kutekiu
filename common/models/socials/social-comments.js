@@ -137,7 +137,7 @@ module.exports = function (Socialcomments) {
     http: { path: '/del-comment', verb: 'delete' },
     description: 'Sử dụng qua post man',
     accepts: [
-      { arg: 'user_id', type: 'number', required: true },
+      { arg: 'user_id', type: 'string', required: true },
       { arg: 'post_id', type: 'string', required: true },
     ],
     returns: [
@@ -150,7 +150,7 @@ module.exports = function (Socialcomments) {
     http: { path: '/add-comment', verb: 'post' },
     description: 'Sử dụng qua post man',
     accepts: [
-      { arg: 'user_id', type: 'number', required: true },
+      { arg: 'user_id', type: 'string', required: true },
       { arg: 'post_id', type: 'string', required: true },
       { arg: 'comment', type: 'string', required: true }
     ],

@@ -33,7 +33,7 @@
     "relations": {
         "user": {
             "type": "belongsTo",
-            "model": "UserInfo",
+            "model": "social_user",
             "foreignKey": "userId"
         }
     },

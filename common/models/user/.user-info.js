@@ -1372,15 +1372,13 @@ module.exports = function (UserInfo) {
                 return UserInfo.registeAccessToken(user);
             })
             .then(token => {
-                app.models.social_user.createSocialUser(token, username, email, (err, doc) => {
-                    if (token !== undefined) {
-                        response.access_token = token.id;
-                        cb(null, 200, "Register success", response);
+                if (token !== undefined) {
+                    response.access_token = token.id;
+                    cb(null, 200, "Register success", response);
 
-                    } else {
-                        cb(null, 201, "Register failed token is undefined", {})
-                    }
-                })
+                } else {
+                    cb(null, 201, "Register failed token is undefined", {})
+                }
             })
             .catch(function (error) {
                 cb(null, 201, "Register failed ", error)

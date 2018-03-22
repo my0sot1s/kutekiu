@@ -26,13 +26,13 @@ function getUserAlbum(user_id) {
     return app.models.social_user
         .findOne({
             where: {
-                user_id
+                id: user_id
             },
-            fields: ['album_name']
+            fields: ['albumname']
         })
         .then(doc => {
             if (!doc) return null;
-            else return doc.album_name
+            else return doc.albumname
         })
 }
 module.exports = {

@@ -91,56 +91,13 @@ module.exports = function (Socialtimeline) {
   Socialtimeline.pre_getUserTimeLine = function (user_id, date, limit, page) {
     if (!date) date = new Date().toDateString();
     var str_date = dateProcess(date), skip = limit * (page - 1);
-    // return Socialtimeline
-    //     .find({
-    //         where: {
-    //             dateFlow: dateProcess(date),
-    //             // timeline: { 'slice': -2 }
-    //             timeline: { slice: [0, 4] }
-    //         },
-
-    //     }, {})
-    // .then(doc => {
-    //     if (!doc) {
-    //         cb(null, cst.SUCCESS_CODE, cst.GET_SUCCESS, []);
-    //         return;
-    //     }
-    //     else {
-    //         // get all post
-    //         /**
-    //          * @property
-    //          * request tới service marcarita lấy dữ liệu
-    //          * - lấy 2comment + comment-count
-    //          * - lấy  like count
-    //          */
-    //         // netw.sendToQueue(cst.PREFIX_SOURCES_QUEUE + 'get2Comment'
-    //         //     , { post_id: doc.timeline.reverse() });
-    //         console.info('send to queue done!')
-    //         post_list_id = doc.timeline.reverse();
-    //         return doc.timeline.reverse()
-    //     }
-    // })
-    // .then(doc => {
-    //     // fetch all post trong post list
-    //     //lấy ra toàn bộ post
-    //     return Promise.map(doc, post_id => {
-    //         return app.models.social_post.findById(post_id, {
-    //             fields: {
-    //                 modified: false
-    //             }
-    //         })
-    //     })
-    // })
     return Socialtimeline.getPostWithTimeline(user_id)
       .then(list_post => {
-        if (!list_post || list_post.length === 0) {
-          return {};
-        } else {
+        if (!list_post || list_post.length === 0) return {}
+        else {
           return Promise.map(list_post, post_id => {
             return { post_id }
-          }).then(value => {
-            return { or: value }
-          })
+          }).then(value => ({ or: value }))
         }
       })
       .then(query => {
@@ -216,7 +173,7 @@ module.exports = function (Socialtimeline) {
     http: { path: '/getTimeLine', verb: 'get' },
     description: 'Sử dụng qua post man',
     accepts: [
-      { arg: 'user_id', type: 'number' },
+      { arg: 'user_id', type: 'string' },
       { arg: 'date', type: 'string' },
       { arg: 'limit', type: 'number', default: 4 },
       { arg: 'page', type: 'number', default: 1 },

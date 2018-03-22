@@ -10,7 +10,7 @@
     },
     "properties": {
         "comsumer_id": {
-            "type": "number"
+            "type": "string"
         },
         "post_id": {
             "type": "string"

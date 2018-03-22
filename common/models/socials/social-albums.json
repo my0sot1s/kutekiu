@@ -20,7 +20,7 @@
     "album_description": {
       "type": "string"
     },
-    "album_media": {
+    "albummedia": {
       "type": "array"
     },
     "created": {

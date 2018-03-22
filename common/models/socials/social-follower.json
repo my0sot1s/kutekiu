@@ -11,10 +11,10 @@
   },
   "properties": {
     "own": {
-      "type": "number"
+      "type": "string"
     },
     "follower": {
-      "type": "number"
+      "type": "string"
     },
     "created": {
       "type": "date"

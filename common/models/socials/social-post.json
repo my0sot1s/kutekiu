@@ -11,7 +11,7 @@
   },
   "properties": {
     "user_id": {
-      "type": "number"
+      "type": "string"
     },
     "post_content": {
       "type": "string"
@@ -57,7 +57,7 @@
     },
     {
       "principalType": "ROLE",
-      "principalId": "$authenticated",
+      "principalId": "$everyone",
       "permission": "ALLOW",
       "property": "createPost"
     },

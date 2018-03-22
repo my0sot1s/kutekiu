@@ -179,30 +179,30 @@ module.exports = function (Socialpost) {
     /**
      * @param {array} log
      */
-    uploadToUserAlbum(req.files, req.body.user_id, `common`, JSON.parse(req.body.tags))
+    uploadToUserAlbum(req.files, req.body.user_id, `common`)
       .then(media => {
         return Socialpost.create({
           user_id: req.body.user_id,
           post_content: req.body.post_content,
           created: Date.now(),
           modified: Date.now(),
-          tags: JSON.parse(req.body.tags),// process tag
+          // tags: JSON.parse(req.body.tags),// process tag
           media
         })
       })
-      .then(doc => {
-        // Insert dữ liệu vào bảng newFeed
-        // dữ liệu post sẽ đẩy vào những người follow bạn
-        return app.models.social_follower
-          .allFollowers(req.body.user_id)
-          .then(list_user => {
-            return app.models.social_timeline
-              .createUserTimeLine(doc.id, list_user);
+      // .then(doc => {
+      //   // Insert dữ liệu vào bảng newFeed
+      //   // dữ liệu post sẽ đẩy vào những người follow bạn
+      //   return app.models.social_follower
+      //     .allFollowers(req.body.user_id)
+      //     .then(list_user => {
+      //       return app.models.social_timeline
+      //         .createUserTimeLine(doc.id, list_user);
 
-          }).then(() => {
-            return doc;
-          });
-      })
+      //     }).then(() => {
+      //       return doc;
+      //     })
+      // })
       .then(doc => {
         cb(null, cst.SUCCESS_CODE, cst.POST_SUCCESS, doc);
       })
@@ -273,7 +273,7 @@ module.exports = function (Socialpost) {
     http: { path: '/get-post', verb: 'get' },
     description: 'Sử dụng qua post man',
     accepts: [
-      { arg: 'user_id', type: 'number', required: true },
+      { arg: 'user_id', type: 'string', required: true },
       { arg: 'limit', type: 'number', default: 5 },
       { arg: 'page', type: 'number', default: 0 },
     ],
